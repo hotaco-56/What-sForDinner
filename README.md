@@ -3,4 +3,6 @@ what is for dinner
 
 Will Aiden Kyle Dane Nathan 
 
-React Frontend Express Backend
+Required Software:
+-React Frontend Express Backend
+-nodejs
