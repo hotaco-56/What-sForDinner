@@ -10,5 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "node": "^23.7.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
