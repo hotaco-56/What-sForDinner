@@ -29,4 +29,5 @@ check .prettierrc for format configs
 
 Scripts:
 npm run lint - check for issues
+
 npm run format - format to prettier settings
