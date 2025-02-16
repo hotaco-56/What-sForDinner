@@ -28,6 +28,7 @@ For this project we use Prettier for automatic code formating
 check .prettierrc for format configs
 
 Scripts:
+
 npm run lint - check for issues
 
 npm run format - format to prettier settings

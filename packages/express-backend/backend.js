@@ -1,8 +1,7 @@
 // backend.js
 import express from "express";
 import cors from "cors";
-import restaurants from "./restaurant.js";
-import restaurantServices from "./restaurant-services.js";
+import restaurantServices from "./models/restaurant-services.js";
 
 const app = express();
 const port = 8000;
@@ -15,18 +14,35 @@ app.get("/", (req, res) => {
 });
 
 app.get("/restaurants", (req, res) => {
-  const name = req.query.name;
-  //const category = req.query.price;
-  //const price = req.query.price;
-  //const avg_rating = req.query.avg_rating;
+  const { search, category, price, min_rating } = req.query;
 
-  if (name != undefined) {
-    let result = restaurantServices.findRestaurantByName(name);
-    result = { restaurants_list: result };
-    res.send(result);
-  } else {
-    res.send(restaurants);
+  let filteredRestaurants = restaurantServices.getAllRestaurants();
+
+  if (search) {
+    filteredRestaurants = restaurantServices.findRestaurantBySearch(
+      search,
+      filteredRestaurants,
+    );
   }
+  if (category) {
+    filteredRestaurants = restaurantServices.findRestaurantByCategory(
+      category,
+      filteredRestaurants,
+    );
+  }
+  if (price) {
+    filteredRestaurants = restaurantServices.findRestaurantByPrice(
+      price,
+      filteredRestaurants,
+    );
+  }
+  if (min_rating) {
+    filteredRestaurants = restaurantServices.findRestaurantByAvgRating(
+      parseFloat(min_rating),
+      filteredRestaurants,
+    );
+  }
+  res.json({ restaurants_list: filteredRestaurants });
 });
 
 app.get("/restaurants/:id", (req, res) => {
