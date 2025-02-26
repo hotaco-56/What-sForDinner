@@ -1,8 +1,8 @@
 // backend.js
 import express from "express";
 import cors from "cors";
-import restaurants from "./restaurant.js";
-import restaurantServices from "./restaurant-services.js";
+import restaurantServices from "./models/restaurant-services.js";
+import userServices from "./models/users-services.js";
 
 const app = express();
 const port = 8000;
@@ -36,6 +36,22 @@ app.get("/restaurants/:id", (req, res) => {
     res.status(404).send("Resource not found.");
   } else {
     res.send(result);
+  }
+});
+
+app.get("/users", (req, res) => {
+  let result = userServices.getUsers();
+  res.send(result);
+});
+
+app.get("/users", (req, res) => {
+  const name = req.query.name;
+  if (name != undefined) {
+    let result = userServices.findUserByName(name);
+    result = { users_list: result };
+    res.send(result);
+  } else {
+    res.send(users);
   }
 });
 
