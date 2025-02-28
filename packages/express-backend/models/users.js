@@ -7,10 +7,13 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    bio: {
+      type: String,
+    }
   },
-  { collection: "users_list" }
+  { collection: "users" }
 );
 
-const User = mongoose.model("User", UserSchema);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;

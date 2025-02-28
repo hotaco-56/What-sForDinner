@@ -1,18 +1,27 @@
 import mongoose from "mongoose";
-import userModel from "./users.js";
+import dotenv from "dotenv";
+import User from "./users.js";
+dotenv.config();
 
-mongoose.set("debug", true);
+let dbConnection;
 
-mongoose
-  .connect("mongodb://localhost:27017/users")
-  .catch((error) => console.log(error));
+function getDbConnection() {
+  if (!dbConnection) {
+    dbConnection = mongoose.createConnection(process.env.MONGODB_URI), {
+      UseNewUrlParse: true,
+      useUnifiedTopology: true,
+    }};
+    return dbConnection;
+}
 
-function getUsers(name) {
+async function getUsers(name) {
+  console.log(User);
+  const usersModel = getDbConnection().model("User", User);
   let promise;
   if (name === undefined) {
-    promise = userModel.find();
+    promise = await usersModel.find();
   } else if (name) {
-    promise = findUserByName(name);
+    promise = await findUserByName(name);
   } 
   return promise;
 }
