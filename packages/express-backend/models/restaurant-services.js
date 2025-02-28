@@ -16,10 +16,8 @@ const findRestaurantBySearch = (search, restaurantList) => {
   );
 };
 
-const findRestaurantByCategory = (category, restaurantList) => {
-  return restaurantList.filter(
-    (restaurant) => restaurant.category === category,
-  );
+const findRestaurantByType = (type, restaurantList) => {
+  return restaurantList.filter((restaurant) => restaurant.type === type);
 };
 
 const findRestaurantByPrice = (price, restaurantList) => {
@@ -58,7 +56,7 @@ export default {
   getAllRestaurants,
   findRestaurantByName,
   findRestaurantBySearch,
-  findRestaurantByCategory,
+  findRestaurantByType,
   findRestaurantByPrice,
   findRestaurantByAvgRating,
   findRestaurantById,

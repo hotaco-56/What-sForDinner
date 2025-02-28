@@ -52,8 +52,8 @@ const RestaurantCard = ({ restaurant }) => {
         ))}
       <CardHeader title={restaurant.name} />
       <CardContent>
-        <p>Description: {restaurant.description}</p>
-        <p>Category: {restaurant.category}</p>
+        <p>Type: {restaurant.type}</p>
+        <p>Address: {restaurant.address}</p>
         <p>Price: {restaurant.price}</p>
         <p>Average Rating: {restaurant.avg_rating}</p>
       </CardContent>

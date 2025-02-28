@@ -2,6 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import restaurants from "../../../express-backend/models/restaurant.js";
 
 const SearchBar = ({ filters, setFilters }) => {
   const handleChange = (event) => {
@@ -49,28 +50,30 @@ const RatingDropdown = ({ filters, setFilters }) => {
   );
 };
 
-const CuisineDropdown = ({ filters, setFilters }) => {
-  const categories = ["Italian", "Japanese", "BBQ", "Vegan", "Chinese"];
+const TypeDropdown = ({ filters, setFilters }) => {
+  const uniqueTypes = [
+    ...new Set(restaurants.restaurants_list.map((r) => r.type)),
+  ];
 
   const handleChange = (event) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      category: event.target.value,
+      type: event.target.value,
     }));
   };
 
   return (
     <TextField
       select
-      label="Cuisine"
-      value={filters.category}
+      label="Type"
+      value={filters.type}
       onChange={handleChange}
       sx={{ width: 150 }}
     >
-      <MenuItem value="">All Cuisines</MenuItem>
-      {categories.map((category) => (
-        <MenuItem key={category} value={category}>
-          {category}
+      <MenuItem value="">All Types</MenuItem>
+      {uniqueTypes.map((type) => (
+        <MenuItem key={type} value={type}>
+          {type}
         </MenuItem>
       ))}
     </TextField>
@@ -121,7 +124,7 @@ const SearchFilter = ({ filters, setFilters }) => {
     >
       <SearchBar filters={filters} setFilters={setFilters} />
       <RatingDropdown filters={filters} setFilters={setFilters} />
-      <CuisineDropdown filters={filters} setFilters={setFilters} />
+      <TypeDropdown filters={filters} setFilters={setFilters} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
     </Box>
   );
