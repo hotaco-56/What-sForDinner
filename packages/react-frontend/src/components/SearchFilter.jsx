@@ -38,7 +38,7 @@ const RatingDropdown = ({ filters, setFilters }) => {
       label="Minimum Rating"
       value={filters.min_rating}
       onChange={handleChange}
-      sx={{ width: 150, backgroundColor: 'grey' }}
+      sx={{ width: 170, backgroundColor: 'grey' }}
     >
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
