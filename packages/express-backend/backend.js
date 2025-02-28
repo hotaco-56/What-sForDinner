@@ -15,9 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 async function fetchNearbyRestaurants() {
-  const API_KEY =
-    process.env.GOOGLE_PLACES_API_KEY ||
-    "AIzaSyBlIOZYAro81DuuDVYFLTPcP02l36gta2s";
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
   const url = `https://places.googleapis.com/v1/places:searchNearby?key=${API_KEY}`;
 
   function formatRestaurantType(type) {
@@ -82,7 +80,7 @@ async function fetchNearbyRestaurants() {
   }
 }
 
-//fetchNearbyRestaurants(); //Try to limit use
+fetchNearbyRestaurants(); //Try to limit use
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
