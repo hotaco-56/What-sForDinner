@@ -1,8 +1,32 @@
 import restaurants from "./restaurant.js";
 
+const getAllRestaurants = () => {
+  return restaurants.restaurants_list;
+};
+
 const findRestaurantByName = (name) => {
   return restaurants["restaurants_list"].filter(
     (restaurant) => restaurant["name"] === name,
+  );
+};
+
+const findRestaurantBySearch = (search, restaurantList) => {
+  return restaurantList.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(search.toLowerCase()),
+  );
+};
+
+const findRestaurantByType = (type, restaurantList) => {
+  return restaurantList.filter((restaurant) => restaurant.type === type);
+};
+
+const findRestaurantByPrice = (price, restaurantList) => {
+  return restaurantList.filter((restaurant) => restaurant.price === price);
+};
+
+const findRestaurantByAvgRating = (min_rating, restaurantList) => {
+  return restaurantList.filter(
+    (restaurant) => restaurant.avg_rating >= min_rating,
   );
 };
 
@@ -29,7 +53,12 @@ const deleteRestaurantById = (id) => {
 };
 
 export default {
+  getAllRestaurants,
   findRestaurantByName,
+  findRestaurantBySearch,
+  findRestaurantByType,
+  findRestaurantByPrice,
+  findRestaurantByAvgRating,
   findRestaurantById,
   addRestaurant,
   deleteRestaurantById,
