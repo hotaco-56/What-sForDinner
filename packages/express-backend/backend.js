@@ -39,8 +39,8 @@ app.get("/restaurants/:id", (req, res) => {
   }
 });
 
-app.get("/users", (req, res) => {
-  let result = userServices.getUsers();
+app.get("/users", async (req, res) => {
+  const result = await userServices.getUsers();
   res.send(result);
 });
 
