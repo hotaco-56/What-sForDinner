@@ -41,6 +41,7 @@ run().catch(console.dir); */
 async function fetchNearbyRestaurants() {
   const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
   const url = `https://places.googleapis.com/v1/places:searchNearby?key=${API_KEY}`;
+  console.log(API_KEY);
 
   function formatRestaurantType(type) {
     return type
