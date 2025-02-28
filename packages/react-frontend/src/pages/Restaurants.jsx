@@ -8,7 +8,7 @@ const Restaurants = () => {
     searchQuery: "",
     type: "",
     price: "",
-    min_rating: 0,
+    min_rating: "",
   });
 
   const fetchRestaurants = async () => {
