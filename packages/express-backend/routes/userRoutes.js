@@ -1,6 +1,4 @@
 import express from "express";
-import userServices from "../models/users-services.js";
-import UserSchema from "../models/users.js";
 import usersServices from "../models/users-services.js";
 
 const router = express.Router();

@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import restaurantServices from "./models/restaurant-services.js";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
-import userRoutes from "./routes/userRoute.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -72,8 +72,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/restaurants", restaurantRoutes);
-
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
