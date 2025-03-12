@@ -11,7 +11,7 @@ const connectDB = async () => {
       connection = await mongoose.connect(uri, {
         dbName: "WhatsForDinner"
       });
-      console.log(mongoose.connection.readyState);
+      //console.log(mongoose.connection.readyState);
       console.log("DB connected");
       console.log(mongoose.connection.db.databaseName);
     } 

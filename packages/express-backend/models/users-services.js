@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import User from "./users.js";
+import Users from "./users.js";
 import connectDB from "../database.js";
 
 await connectDB();
@@ -8,8 +8,8 @@ await connectDB();
 async function getUsers(name) {
   let user;
   try {
-    user = await User.findOne();
-    console.log("user found:", user);
+    user = await Users.find();
+    console.log("users found:", user);
   } catch (err) {
     console.error("query error:", err);
   }
