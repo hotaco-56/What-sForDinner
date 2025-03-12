@@ -4,16 +4,14 @@ const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      trim: true,
     },
     bio: {
       type: String,
     }
   },
-  { collection: "users" }
+  {collection: "users"}
 );
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 export default User;

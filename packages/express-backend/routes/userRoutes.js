@@ -1,37 +1,44 @@
 import express from "express";
 import userServices from "../models/users-services.js";
-import User from "../models/users.js";
+import UserSchema from "../models/users.js";
+import usersServices from "../models/users-services.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  res.send(userServices.getUsers());
-});
-
-router.get("/:id", (req, res) => {
-  const id = req.params["id"];
-  let result = restaurantServices.findRestaurantById(id);
-  if (!result) {
+  let users = await usersServices.getUsers();
+  if (!users) {
     res.status(404).send("Resource not found.");
   } else {
-    res.send(result);
+    res.send(users);
   }
 });
 
-router.post("/", (req, res) => {
-  const restaurantToAdd = req.body;
-  restaurantServices.addRestaurant(restaurantToAdd);
-  res.send();
+//NOT implemented with db
+router.get("/favorites", (req, res) => {
+  let user = userServices.findUserById(111);
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+  res.json({ favorites: user.favorites });
 });
 
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  let delet = restaurantServices.deleteRestaurantById(id);
-  if (!delet) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.status(200).send(`User with id ${id} was deleted.`);
+//NOT implemented with db
+router.post("/toggle-favorites", (req, res) => {
+  const { userId, restaurantId } = req.body;
+
+  let user = userServices.findUserById(111);
+  if (!user) {
+    return res.status(404).send("User not found");
   }
+
+  if (user.favorites.includes(restaurantId)) {
+    user.favorites = user.favorites.filter((id) => id !== restaurantId);
+  } else {
+    user.favorites.push(restaurantId);
+  }
+
+  res.json({ favorites: user.favorites });
 });
 
 export default router;

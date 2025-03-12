@@ -1,29 +1,19 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import User from "./users.js";
-dotenv.config();
+import connectDB from "../database.js";
 
-let dbConnection;
-
-function getDbConnection() {
-  if (!dbConnection) {
-    dbConnection = mongoose.createConnection(process.env.MONGODB_URI), {
-      UseNewUrlParse: true,
-      useUnifiedTopology: true,
-    }};
-    return dbConnection;
-}
+await connectDB();
 
 async function getUsers(name) {
-  console.log(User);
-  const usersModel = getDbConnection().model("User", User);
-  let promise;
-  if (name === undefined) {
-    promise = await usersModel.find();
-  } else if (name) {
-    promise = await findUserByName(name);
-  } 
-  return promise;
+  let user;
+  try {
+    user = await User.findOne();
+    console.log("user found:", user);
+  } catch (err) {
+    console.error("query error:", err);
+  }
+  return user;
 }
 
 function findUserById(id) {

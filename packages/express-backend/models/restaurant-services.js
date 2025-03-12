@@ -25,9 +25,7 @@ const findRestaurantByPrice = (price, restaurantList) => {
 };
 
 const findRestaurantByAvgRating = (min_rating, restaurantList) => {
-  return restaurantList.filter(
-    (restaurant) => restaurant.avg_rating >= min_rating,
-  );
+  return restaurantList.filter((restaurant) => restaurant.rating >= min_rating);
 };
 
 const findRestaurantById = (id) => {
