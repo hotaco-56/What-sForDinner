@@ -1,63 +1,29 @@
-import restaurants from "./restaurant.js";
+//import Restaurant from "./restaurant.js";
 
-const getAllRestaurants = () => {
-  return restaurants.restaurants_list;
-};
+// // Retrieves all restaurants with an optional query filter
+// const getAllRestaurants = async (query = {}) => {
+//   return await Restaurant.find(query);
+// };
 
-const findRestaurantByName = (name) => {
-  return restaurants["restaurants_list"].filter(
-    (restaurant) => restaurant["name"] === name,
-  );
-};
+// // Retrieves a single restaurant by its MongoDB-generated _id
+// const findRestaurantById = async (id) => {
+//   return await Restaurant.findById(id);
+// };
 
-const findRestaurantBySearch = (search, restaurantList) => {
-  return restaurantList.filter((restaurant) =>
-    restaurant.name.toLowerCase().includes(search.toLowerCase()),
-  );
-};
+// // Adds a new restaurant to the database
+// const addRestaurant = async (restaurantData) => {
+//   const restaurant = new Restaurant(restaurantData);
+//   return await restaurant.save();
+// };
 
-const findRestaurantByType = (type, restaurantList) => {
-  return restaurantList.filter((restaurant) => restaurant.type === type);
-};
+// // Deletes a restaurant by its id
+// const deleteRestaurantById = async (id) => {
+//   return await Restaurant.findByIdAndDelete(id);
+// };
 
-const findRestaurantByPrice = (price, restaurantList) => {
-  return restaurantList.filter((restaurant) => restaurant.price === price);
-};
-
-const findRestaurantByAvgRating = (min_rating, restaurantList) => {
-  return restaurantList.filter((restaurant) => restaurant.rating >= min_rating);
-};
-
-const findRestaurantById = (id) => {
-  return restaurants["restaurants_list"].find(
-    (restaurant) => restaurant["id"] === id,
-  );
-};
-
-const addRestaurant = (restaurant) => {
-  restaurants["restaurants_list"].push(restaurant);
-  return restaurant;
-};
-
-const deleteRestaurantById = (id) => {
-  const index = restaurants["restaurants_list"].findIndex(
-    (restaurant) => restaurant["id"] === id,
-  );
-  if (index !== -1) {
-    restaurants["restaurants_list"].splice(index, 1);
-    return true;
-  }
-  return false;
-};
-
-export default {
-  getAllRestaurants,
-  findRestaurantByName,
-  findRestaurantBySearch,
-  findRestaurantByType,
-  findRestaurantByPrice,
-  findRestaurantByAvgRating,
-  findRestaurantById,
-  addRestaurant,
-  deleteRestaurantById,
-};
+// export default {
+//   getAllRestaurants,
+//   findRestaurantById,
+//   addRestaurant,
+//   deleteRestaurantById,
+// };
