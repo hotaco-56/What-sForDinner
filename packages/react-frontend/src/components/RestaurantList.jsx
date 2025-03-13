@@ -52,10 +52,70 @@ const RestaurantCard = ({ restaurant }) => {
         ))}
       <CardHeader title={restaurant.name} />
       <CardContent>
-        <p>Type: {restaurant.type}</p>
-        <p>Address: {restaurant.address}</p>
-        <p>Price: {restaurant.price}</p>
-        <p>Average Rating: {restaurant.avg_rating}</p>
+        <p>
+          {restaurant.featured_image ? (
+            <img
+              src={restaurant.featured_image}
+              alt={`${restaurant.name} image`}
+              style={{
+                width: "100%",
+                maxWidth: "500px",
+                height: "auto",
+              }}
+            />
+          ) : (
+            "No image available"
+          )}
+        </p>
+        <p>
+          {restaurant.link ? (
+            <a href={restaurant.link} target="_blank" rel="noopener noreferrer">
+              Visit Website
+            </a>
+          ) : (
+            "Unknown"
+          )}
+        </p>
+        <p>
+          Cuisines:{" "}
+          {restaurant.cuisines.length > 0
+            ? restaurant.cuisines.join(", ")
+            : "NA"}
+        </p>
+        <p>Price Range: {restaurant.price_range_usd || "NA"}</p>
+        <p>Average Rating: {restaurant.rating || "NA"}</p>
+        <p>Reviews: {restaurant.reviews || "NA"}</p>
+        <p>Has Delivery: {restaurant.has_delivery ? "Yes" : "No"}</p>
+
+        {/* Menu Link */}
+        <p>
+          {restaurant.menu_link ? (
+            <a
+              href={restaurant.menu_link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Menu
+            </a>
+          ) : (
+            "Menu Not Available"
+          )}
+        </p>
+
+        {/* Reservation Link */}
+        <p>
+          {restaurant.reservation_link ? (
+            <a
+              href={restaurant.reservation_link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Make a Reservation
+            </a>
+          ) : (
+            "Reservation Not Available"
+          )}
+        </p>
       </CardContent>
     </Card>
   );
