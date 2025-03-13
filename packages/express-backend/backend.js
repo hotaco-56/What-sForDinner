@@ -1,7 +1,12 @@
 // backend.js
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import restaurantServices from "./models/restaurant-services.js";
+import restaurantRoutes from "./routes/restaurantRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
+dotenv.config();
 
 const app = express();
 const port = 8000;
@@ -9,67 +14,65 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 
+const options = {
+  method: "GET",
+  headers: {
+    "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+    "x-rapidapi-host": "tripadvisor-scraper.p.rapidapi.com",
+  },
+};
+
+async function fetchRestaurants(page, location) {
+  const encodedLocation = encodeURIComponent(location);
+  const url = `https://tripadvisor-scraper.p.rapidapi.com/restaurants/list?query=${encodedLocation}&page=${page}`;
+
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const restaurants = data.results || [];
+
+    restaurants.forEach((restaurant) => {
+      const restaurantDetails = {
+        id: restaurant.id,
+        name: restaurant.name,
+        link: restaurant.link,
+        reviews: restaurant.reviews,
+        rating: restaurant.rating,
+        price_range_usd: restaurant.price_range_usd,
+        menu_link: restaurant.menu_link,
+        reservation_link: restaurant.reservation_link,
+        featured_image: restaurant.featured_image,
+        has_delivery: restaurant.has_delivery,
+        cuisines: restaurant.cuisines,
+      };
+
+      restaurantServices.addRestaurant(restaurantDetails);
+    });
+  } catch (error) {
+    console.error(
+      `Error fetching or storing restaurants from page ${page} in ${location}:`,
+      error.message,
+    );
+  }
+}
+
+async function fetchAllRestaurants(location) {
+  await fetchRestaurants(1, location);
+  await fetchRestaurants(2, location);
+}
+
+//fetchAllRestaurants("San Luis Obispo"); //try to limit use 200 calls per month
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/restaurants", (req, res) => {
-  const { search, category, price, min_rating } = req.query;
-
-  let filteredRestaurants = restaurantServices.getAllRestaurants();
-
-  if (search) {
-    filteredRestaurants = restaurantServices.findRestaurantBySearch(
-      search,
-      filteredRestaurants,
-    );
-  }
-  if (category) {
-    filteredRestaurants = restaurantServices.findRestaurantByCategory(
-      category,
-      filteredRestaurants,
-    );
-  }
-  if (price) {
-    filteredRestaurants = restaurantServices.findRestaurantByPrice(
-      price,
-      filteredRestaurants,
-    );
-  }
-  if (min_rating) {
-    filteredRestaurants = restaurantServices.findRestaurantByAvgRating(
-      parseFloat(min_rating),
-      filteredRestaurants,
-    );
-  }
-  res.json({ restaurants_list: filteredRestaurants });
-});
-
-app.get("/restaurants/:id", (req, res) => {
-  const id = req.params["id"]; //or req.params.id
-  let result = restaurantServices.findRestaurantById(id);
-  if (!result) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
-  }
-});
-
-app.post("/restaurants", (req, res) => {
-  const restaurantToAdd = req.body;
-  restaurantServices.addRestaurant(restaurantToAdd);
-  res.send();
-});
-
-app.delete("/restaurants/:id", (req, res) => {
-  const id = req.params.id;
-  let delet = restaurantServices.deleteRestaurantById(id);
-  if (!delet) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.status(200).send(`User with id ${id} was deleted.`);
-  }
-});
+app.use("/restaurants", restaurantRoutes);
+app.use("/users", userRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

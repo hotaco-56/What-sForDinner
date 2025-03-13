@@ -2,6 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import restaurants from "../../../express-backend/models/restaurant.js";
 
 const SearchBar = ({ filters, setFilters }) => {
   const handleChange = (event) => {
@@ -16,7 +17,7 @@ const SearchBar = ({ filters, setFilters }) => {
       label="Search restaurant..."
       value={filters.searchQuery}
       onChange={handleChange}
-      sx={{ width: 200 }}
+      sx={{ width: 200, backgroundColor: 'grey' }}
     />
   );
 };
@@ -37,7 +38,7 @@ const RatingDropdown = ({ filters, setFilters }) => {
       label="Minimum Rating"
       value={filters.min_rating}
       onChange={handleChange}
-      sx={{ width: 150 }}
+      sx={{ width: 170, backgroundColor: 'grey' }}
     >
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
@@ -49,28 +50,30 @@ const RatingDropdown = ({ filters, setFilters }) => {
   );
 };
 
-const CuisineDropdown = ({ filters, setFilters }) => {
-  const categories = ["Italian", "Japanese", "BBQ", "Vegan", "Chinese"];
+const TypeDropdown = ({ filters, setFilters }) => {
+  const uniqueTypes = [
+    ...new Set(restaurants.restaurants_list.map((r) => r.type)),
+  ];
 
   const handleChange = (event) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      category: event.target.value,
+      type: event.target.value,
     }));
   };
 
   return (
     <TextField
       select
-      label="Cuisine"
-      value={filters.category}
+      label="Type"
+      value={filters.type}
       onChange={handleChange}
-      sx={{ width: 150 }}
+      sx={{ width: 150, backgroundColor: 'grey' }}
     >
-      <MenuItem value="">All Cuisines</MenuItem>
-      {categories.map((category) => (
-        <MenuItem key={category} value={category}>
-          {category}
+      <MenuItem value="">All Types</MenuItem>
+      {uniqueTypes.map((type) => (
+        <MenuItem key={type} value={type}>
+          {type}
         </MenuItem>
       ))}
     </TextField>
@@ -93,7 +96,7 @@ const PriceDropdown = ({ filters, setFilters }) => {
       label="Price"
       value={filters.price}
       onChange={handleChange}
-      sx={{ width: 150 }}
+      sx={{ width: 150, backgroundColor: 'grey' }}
     >
       <MenuItem value="">Any Price</MenuItem>
       {priceOptions.map((price) => (
@@ -114,6 +117,7 @@ const SearchFilter = ({ filters, setFilters }) => {
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
+        justifyContent: 'center',
         gap: 2,
         pl: 4,
         overflowX: "hidden",
@@ -121,7 +125,7 @@ const SearchFilter = ({ filters, setFilters }) => {
     >
       <SearchBar filters={filters} setFilters={setFilters} />
       <RatingDropdown filters={filters} setFilters={setFilters} />
-      <CuisineDropdown filters={filters} setFilters={setFilters} />
+      <TypeDropdown filters={filters} setFilters={setFilters} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
     </Box>
   );

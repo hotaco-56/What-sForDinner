@@ -16,10 +16,8 @@ const findRestaurantBySearch = (search, restaurantList) => {
   );
 };
 
-const findRestaurantByCategory = (category, restaurantList) => {
-  return restaurantList.filter(
-    (restaurant) => restaurant.category === category,
-  );
+const findRestaurantByType = (type, restaurantList) => {
+  return restaurantList.filter((restaurant) => restaurant.type === type);
 };
 
 const findRestaurantByPrice = (price, restaurantList) => {
@@ -27,9 +25,7 @@ const findRestaurantByPrice = (price, restaurantList) => {
 };
 
 const findRestaurantByAvgRating = (min_rating, restaurantList) => {
-  return restaurantList.filter(
-    (restaurant) => restaurant.avg_rating >= min_rating,
-  );
+  return restaurantList.filter((restaurant) => restaurant.rating >= min_rating);
 };
 
 const findRestaurantById = (id) => {
@@ -58,7 +54,7 @@ export default {
   getAllRestaurants,
   findRestaurantByName,
   findRestaurantBySearch,
-  findRestaurantByCategory,
+  findRestaurantByType,
   findRestaurantByPrice,
   findRestaurantByAvgRating,
   findRestaurantById,
