@@ -2,9 +2,6 @@ import React from "react";
 import { Modal, Box, Typography, Button, Link } from "@mui/material";
 
 const RestaurantModal = ({ open, handleClose, selectedItem }) => {
-  console.log("Modal open:", open);
-  console.log("Selected Item:", selectedItem);
-
   if (!selectedItem) return null;
 
   return (
