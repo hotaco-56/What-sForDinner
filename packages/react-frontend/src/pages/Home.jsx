@@ -1,23 +1,53 @@
-import React, { useState } from 'react';
-import CustomWheel from '../components/Wheel';
-import RestaurantModal from '../components/RestaurantModal';
+import React, { useState, useEffect } from "react";
+import CustomWheel from "../components/Wheel";
+import RestaurantModal from "../components/RestaurantModal";
 
 const Home = () => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState(false);
-  const items = ['Popeyes', 'Santa Cruz Taqueria', 'Jack In The Box', 'Quesedilla Gorilla'];
+  const [restaurants, setRestaurants] = useState([]);
+  const city = "slo"; // Later, get city from user input
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8000/restaurants/${city.toLowerCase()}`,
+        );
+        const data = await res.json();
+
+        // Ensure data is an array before setting state
+        if (Array.isArray(data) && data.length > 0) {
+          setRestaurants(data);
+        } else {
+          console.error("Invalid data format:", data);
+          setRestaurants([]);
+        }
+      } catch (error) {
+        console.error("Error fetching restaurants:", error);
+        setRestaurants([]);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   const handleSpinClick = () => {
-    const randomIndex = Math.floor(Math.random() * items.length);
+    if (restaurants.length === 0) {
+      console.warn("No restaurants available to spin.");
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * restaurants.length);
     setPrizeNumber(randomIndex);
     setMustSpin(true);
   };
 
   const handleStopSpinning = () => {
     setMustSpin(false);
-    setSelectedItem(items[prizeNumber]);
+    setSelectedItem(restaurants[prizeNumber]); 
     setOpen(true);
   };
 
@@ -28,11 +58,26 @@ const Home = () => {
   return (
     <div>
       <h1>Home Page</h1>
-      <CustomWheel mustSpin={mustSpin} prizeNumber={prizeNumber} onStopSpinning={handleStopSpinning} />
-      <button onClick={handleSpinClick}>Spin the Wheel</button>
-      {selectedItem && <p>Selected Restaurant: {selectedItem}</p>}
-      
-      <RestaurantModal open={open} handleClose={handleClose} selectedItem={selectedItem} />
+      {restaurants.length > 0 ? (
+        <>
+          <CustomWheel
+            mustSpin={mustSpin}
+            prizeNumber={prizeNumber}
+            onStopSpinning={handleStopSpinning}
+            data={restaurants.map((r) => ({ option: r.name }))}
+          />
+          <button onClick={handleSpinClick}>Spin the Wheel</button>
+        </>
+      ) : (
+        <p>Loading restaurants or no restaurants found...</p>
+      )}
+      {selectedItem && <p>Selected Restaurant: {selectedItem.name}</p>}
+
+      <RestaurantModal
+        open={open}
+        handleClose={handleClose}
+        selectedItem={selectedItem}
+      />
     </div>
   );
 };

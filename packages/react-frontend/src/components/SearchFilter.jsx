@@ -56,6 +56,7 @@ const RatingDropdown = ({ filters, setFilters }) => {
 
 const TypeDropdown = ({ filters, setFilters }) => {
   const [types, setTypes] = useState([]);
+  const city = "slo";
 
   useEffect(() => {
     const fetchRestaurantTypes = async (city) => {
@@ -73,7 +74,7 @@ const TypeDropdown = ({ filters, setFilters }) => {
       }
     };
 
-    fetchRestaurantTypes("slo"); //later change to get city from user
+    fetchRestaurantTypes(city); 
   }, []);
 
   const handleChange = (event) => {

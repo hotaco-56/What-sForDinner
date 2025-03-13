@@ -10,6 +10,7 @@ const Restaurants = () => {
     price: "",
     min_rating: "",
   });
+  const city = "slo"; // Later, get city from user input
 
   const fetchRestaurants = async (city) => {
     if (!city) {
@@ -32,7 +33,7 @@ const Restaurants = () => {
   };
 
   useEffect(() => {
-    fetchRestaurants("nyc") //later change to get city from user
+    fetchRestaurants(city) 
       .then((res) => res.json())
       .then((json) => {
         setRestaurants(json);
