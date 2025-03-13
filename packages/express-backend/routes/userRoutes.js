@@ -1,17 +1,18 @@
 import express from "express";
-import userServices from "../models/user-services.js";
+import usersServices from "../models/users-services.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  let result = userServices.findUserById(111);
-  if (!result) {
+router.get("/", async (req, res) => {
+  let users = await usersServices.getUsers();
+  if (!users) {
     res.status(404).send("Resource not found.");
   } else {
-    res.send(result);
+    res.send(users);
   }
 });
 
+//NOT implemented with db
 router.get("/favorites", (req, res) => {
   let user = userServices.findUserById(111);
   if (!user) {
@@ -19,8 +20,8 @@ router.get("/favorites", (req, res) => {
   }
   res.json({ favorites: user.favorites });
 });
-export default router;
 
+//NOT implemented with db
 router.post("/toggle-favorites", (req, res) => {
   const { userId, restaurantId } = req.body;
 
@@ -37,3 +38,5 @@ router.post("/toggle-favorites", (req, res) => {
 
   res.json({ favorites: user.favorites });
 });
+
+export default router;
