@@ -4,6 +4,10 @@ what is for dinner
 
 Will Aiden Kyle Dane Nathan
 
+# Technical Specification
+
+https://docs.google.com/document/d/100uOvXXVBDtUlq21Loc0mE9Szhwt9eZojN7OJvCMnuU/edit?tab=t.0
+
 
 # Required Software:
 
