@@ -2,6 +2,8 @@ import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
 
 const RestaurantModal = ({ open, handleClose, selectedItem }) => {
+  if (!selectedItem) return null;
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={{ 
@@ -10,22 +12,29 @@ const RestaurantModal = ({ open, handleClose, selectedItem }) => {
         left: '50%', 
         transform: 'translate(-50%, -50%)', 
         width: 400, 
-        bgcolor: 'background.paper', 
+        bgcolor: 'black', 
+        color: 'white', 
         border: '2px solid #000', 
         boxShadow: 24, 
         p: 4 
       }}>
         <Typography variant="h6" component="h2">
-          {selectedItem}
+          {selectedItem.name}
         </Typography>
-        <img src="placeholder-image-url" alt={selectedItem} style={{ width: '100%', height: 'auto' }} />
+        <img src={selectedItem.featured_image} alt={selectedItem.name} style={{ width: '100%', height: 'auto' }} />
         <Typography sx={{ mt: 2 }}>
-          Location: Placeholder Location
+          Rating: {selectedItem.rating}
         </Typography>
         <Typography sx={{ mt: 2 }}>
-          Price Range: Placeholder Price Range
+          Price Range: {selectedItem.price_range_usd}
         </Typography>
-        <Button onClick={handleClose} sx={{ mt: 2 }}>Close</Button>
+        <Typography sx={{ mt: 2 }}>
+          Cuisines: {selectedItem.cuisines.join(', ')}
+        </Typography>
+        <Typography sx={{ mt: 2 }}>
+          <a href={selectedItem.menu_link} target="_blank" rel="noopener noreferrer" style={{ color: 'blue' }}>View Menu</a>
+        </Typography>
+        <Button onClick={handleClose} sx={{ mt: 2, color: 'white', borderColor: 'white' }}>Close</Button>
       </Box>
     </Modal>
   );

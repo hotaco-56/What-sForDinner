@@ -1,12 +1,11 @@
 import React from 'react';
 import { Wheel } from 'react-custom-roulette';
+import restaurants from '../../../express-backend/models/restaurant';
 
-const data = [
-  { option: 'Popeyes', style: { backgroundColor: 'red', textColor: 'black' } },
-  { option: 'Santa Cruz Taqueria', style: { backgroundColor: 'blue' } },
-  { option: 'Jack In The Box' },
-  { option: 'Quesedilla Gorilla' },
-];
+const data = restaurants.restaurants_list.map((restaurant, index) => ({
+  option: '',
+  style: { backgroundColor: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'brown'][index % 8] }
+}));
 
 const CustomWheel = ({ mustSpin, prizeNumber, onStopSpinning }) => (
   <Wheel

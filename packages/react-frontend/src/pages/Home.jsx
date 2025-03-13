@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
 import CustomWheel from '../components/Wheel';
 import RestaurantModal from '../components/RestaurantModal';
+import restaurants from '../../../express-backend/models/restaurant';
 
 const Home = () => {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState(false);
-  const items = ['Popeyes', 'Santa Cruz Taqueria', 'Jack In The Box', 'Quesedilla Gorilla'];
 
   const handleSpinClick = () => {
-    const randomIndex = Math.floor(Math.random() * items.length);
-    setPrizeNumber(randomIndex);
+    const randomPrizeNumber = Math.floor(Math.random() * restaurants.restaurants_list.length);
+    setPrizeNumber(randomPrizeNumber);
     setMustSpin(true);
   };
 
   const handleStopSpinning = () => {
     setMustSpin(false);
-    setSelectedItem(items[prizeNumber]);
+    fetchRandomRestaurantInfo();
+  };
+
+  const fetchRandomRestaurantInfo = async () => {
+    const randomIndex = Math.floor(Math.random() * restaurants.restaurants_list.length);
+    const restaurantInfo = restaurants.restaurants_list[randomIndex];
+    setSelectedItem(restaurantInfo);
     setOpen(true);
   };
 
@@ -30,7 +36,6 @@ const Home = () => {
       <h1>Home Page</h1>
       <CustomWheel mustSpin={mustSpin} prizeNumber={prizeNumber} onStopSpinning={handleStopSpinning} />
       <button onClick={handleSpinClick}>Spin the Wheel</button>
-      {selectedItem && <p>Selected Restaurant: {selectedItem}</p>}
       
       <RestaurantModal open={open} handleClose={handleClose} selectedItem={selectedItem} />
     </div>
