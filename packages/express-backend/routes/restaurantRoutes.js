@@ -1,63 +1,65 @@
 import express from "express";
-import restaurantServices from "../models/restaurant-services.js";
+import { Restaurant, getRestaurantModel } from "../models/restaurant.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const { search, type, price, min_rating } = req.query;
+router.get("/:city", async (req, res) => {
+  try {
+    const { search, type, price, min_rating } = req.query;
+    const { city } = req.params;
 
-  let filteredRestaurants = restaurantServices.getAllRestaurants();
+    const Restaurant = getRestaurantModel(city);
+    let query = {};
 
-  if (search) {
-    filteredRestaurants = restaurantServices.findRestaurantBySearch(
-      search,
-      filteredRestaurants,
-    );
-  }
-  if (type) {
-    filteredRestaurants = restaurantServices.findRestaurantByType(
-      type,
-      filteredRestaurants,
-    );
-  }
-  if (price) {
-    filteredRestaurants = restaurantServices.findRestaurantByPrice(
-      price,
-      filteredRestaurants,
-    );
-  }
-  if (min_rating) {
-    filteredRestaurants = restaurantServices.findRestaurantByAvgRating(
-      parseFloat(min_rating),
-      filteredRestaurants,
-    );
-  }
-  res.json({ restaurants_list: filteredRestaurants });
-});
+    if (search) query.name = { $regex: search, $options: "i" };
+    if (type) query.cuisines = { $in: [type] };
+    if (price) query.price_range_usd = price;
+    if (min_rating) query.rating = { $gte: parseFloat(min_rating) };
 
-router.get("/:id", (req, res) => {
-  const id = req.params["id"];
-  let result = restaurantServices.findRestaurantById(id);
-  if (!result) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
+    const restaurants = await Restaurant.find(query);
+
+    res.json(restaurants);
+  } catch (error) {
+    console.error("Error fetching restaurants:", error);
+    res.status(500).json({ error: "Error fetching restaurants" });
   }
 });
 
-router.post("/", (req, res) => {
-  const restaurantToAdd = req.body;
-  restaurantServices.addRestaurant(restaurantToAdd);
-  res.send();
+// check bellow never used yet
+router.get("/:id", async (req, res) => {
+  const { city } = req.params;
+  const Restaurant = getRestaurantModel(city);
+  try {
+    const restaurant = await Restaurant.findById(req.params.id);
+    if (!restaurant) return res.status(404).json({ message: "Not found" });
+    res.json(restaurant);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching restaurant" });
+  }
 });
 
-router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  let delet = restaurantServices.deleteRestaurantById(id);
-  if (!delet) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.status(200).send(`User with id ${id} was deleted.`);
+
+router.post("/", async (req, res) => {
+  const { city } = req.params;
+  const Restaurant = getRestaurantModel(city);
+  try {
+    const newRestaurant = new Restaurant(req.body);
+    await newRestaurant.save();
+    res.status(201).json(newRestaurant);
+  } catch (error) {
+    res.status(500).json({ error: "Error adding restaurant" });
+  }
+});
+
+
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleted = await Restaurant.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Not found" });
+    res.json({ message: "Restaurant deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Error deleting restaurant" });
   }
 });
 

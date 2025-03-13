@@ -2,7 +2,11 @@ import React from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import restaurants from "../../../express-backend/models/restaurant.js";
+import {
+  Restaurant,
+  getRestaurantModel,
+} from "../../../express-backend/models/restaurant.js";
+import { useState, useEffect } from "react";
 
 const SearchBar = ({ filters, setFilters }) => {
   const handleChange = (event) => {
@@ -17,7 +21,7 @@ const SearchBar = ({ filters, setFilters }) => {
       label="Search restaurant..."
       value={filters.searchQuery}
       onChange={handleChange}
-      sx={{ width: 200, backgroundColor: 'grey' }}
+      sx={{ width: 200, backgroundColor: "grey" }}
     />
   );
 };
@@ -38,7 +42,7 @@ const RatingDropdown = ({ filters, setFilters }) => {
       label="Minimum Rating"
       value={filters.min_rating}
       onChange={handleChange}
-      sx={{ width: 170, backgroundColor: 'grey' }}
+      sx={{ width: 170, backgroundColor: "grey" }}
     >
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
@@ -51,9 +55,27 @@ const RatingDropdown = ({ filters, setFilters }) => {
 };
 
 const TypeDropdown = ({ filters, setFilters }) => {
-  const uniqueTypes = [
-    ...new Set(restaurants.restaurants_list.map((r) => r.type)),
-  ];
+  const [types, setTypes] = useState([]);
+  const city = "slo";
+
+  useEffect(() => {
+    const fetchRestaurantTypes = async (city) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8000/restaurants/${city.toLowerCase()}`,
+        );
+        const data = await response.json();
+
+        // Flatten and remove duplicates
+        const uniqueTypes = [...new Set(data.flatMap((r) => r.cuisines))];
+        setTypes(uniqueTypes);
+      } catch (error) {
+        console.error("Error fetching restaurant types:", error);
+      }
+    };
+
+    fetchRestaurantTypes(city); 
+  }, []);
 
   const handleChange = (event) => {
     setFilters((prevFilters) => ({
@@ -68,10 +90,10 @@ const TypeDropdown = ({ filters, setFilters }) => {
       label="Type"
       value={filters.type}
       onChange={handleChange}
-      sx={{ width: 150, backgroundColor: 'grey' }}
+      sx={{ width: 150, backgroundColor: "grey" }}
     >
       <MenuItem value="">All Types</MenuItem>
-      {uniqueTypes.map((type) => (
+      {types.map((type) => (
         <MenuItem key={type} value={type}>
           {type}
         </MenuItem>
@@ -96,7 +118,7 @@ const PriceDropdown = ({ filters, setFilters }) => {
       label="Price"
       value={filters.price}
       onChange={handleChange}
-      sx={{ width: 150, backgroundColor: 'grey' }}
+      sx={{ width: 150, backgroundColor: "grey" }}
     >
       <MenuItem value="">Any Price</MenuItem>
       {priceOptions.map((price) => (
@@ -117,7 +139,7 @@ const SearchFilter = ({ filters, setFilters }) => {
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
-        justifyContent: 'center',
+        justifyContent: "center",
         gap: 2,
         pl: 4,
         overflowX: "hidden",
