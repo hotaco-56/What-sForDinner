@@ -1,8 +1,12 @@
 // backend.js
 import express from "express";
 import cors from "cors";
-import restaurants from "./restaurant.js";
-import restaurantServices from "./restaurant-services.js";
+import axios from "axios";
+import dotenv from "dotenv";
+import restaurantServices from "./models/restaurant-services.js";
+import restaurantRoutes from "./routes/restaurantRoutes.js";
+
+dotenv.config();
 
 const app = express();
 const port = 8000;
@@ -10,49 +14,83 @@ const port = 8000;
 app.use(cors());
 app.use(express.json());
 
+async function fetchNearbyRestaurants() {
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
+  const url = `https://places.googleapis.com/v1/places:searchNearby?key=${API_KEY}`;
+
+  function formatRestaurantType(type) {
+    return type
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  try {
+    const response = await axios.post(
+      url,
+      {
+        includedTypes: ["restaurant"], // Filter for restaurants
+        locationRestriction: {
+          circle: {
+            center: { latitude: 35.2828, longitude: -120.6596 }, // San Luis Obispo, CA
+            radius: 50000.0,
+          },
+        },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-FieldMask":
+            "places.id,places.displayName,places.rating,places.priceLevel,places.formattedAddress,places.primaryType",
+        },
+      },
+    );
+
+    // Check if response contains places
+    const restaurants = response.data.places || [];
+
+    const priceMapping = {
+      PRICE_LEVEL_UNSPECIFIED: "NA",
+      PRICE_LEVEL_FREE: "$",
+      PRICE_LEVEL_INEXPENSIVE: "$",
+      PRICE_LEVEL_MODERATE: "$$",
+      PRICE_LEVEL_EXPENSIVE: "$$$",
+      PRICE_LEVEL_VERY_EXPENSIVE: "$$$$",
+    };
+
+    // Process and store each restaurant's details
+    restaurants.forEach((restaurant) => {
+      const restaurantDetails = {
+        id: restaurant.id,
+        type: formatRestaurantType(restaurant.primaryType) || "Unknown",
+        name: restaurant.displayName?.text || "Unknown",
+        address: restaurant.formattedAddress || "Unknown",
+        price: priceMapping[restaurant.priceLevel] || "NA",
+        avg_rating: restaurant.rating || "NA",
+      };
+      restaurantServices.addRestaurant(restaurantDetails);
+    });
+
+    console.log("Successfully fetched and stored nearby restaurants.");
+  } catch (error) {
+    console.error(
+      "Error fetching nearby restaurants:",
+      error.response?.data || error.message,
+    );
+  }
+}
+
+fetchNearbyRestaurants(); //Try to limit use
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/restaurants", (req, res) => {
-  const name = req.query.name;
-  //const category = req.query.price;
-  //const price = req.query.price;
-  //const avg_rating = req.query.avg_rating;
+app.use("/restaurants", restaurantRoutes);
 
-  if (name != undefined) {
-    let result = restaurantServices.findRestaurantByName(name);
-    result = { restaurants_list: result };
-    res.send(result);
-  } else {
-    res.send(restaurants);
-  }
-});
-
-app.get("/restaurants/:id", (req, res) => {
-  const id = req.params["id"]; //or req.params.id
-  let result = restaurantServices.findRestaurantById(id);
-  if (!result) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
-  }
-});
-
-app.post("/restaurants", (req, res) => {
-  const restaurantToAdd = req.body;
-  restaurantServices.addRestaurant(restaurantToAdd);
-  res.send();
-});
-
-app.delete("/restaurants/:id", (req, res) => {
-  const id = req.params.id;
-  let delet = restaurantServices.deleteRestaurantById(id);
-  if (!delet) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.status(200).send(`User with id ${id} was deleted.`);
-  }
+app.get("/favorites", (req, res) => {
+  let favorites = restaurantServices.getAllRestaurants(); //change
+  res.json({ favorites_list: favorites });
 });
 
 app.listen(port, () => {
