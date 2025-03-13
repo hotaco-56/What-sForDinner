@@ -5,7 +5,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
 
   const fetchUser = () => {
-    const promise = fetch("http://localhost:8000/user");
+    const promise = fetch(
+      "http://localhost:8000/users/67d1ffc9ff5e6d6ff11fb423",
+    );
     return promise;
   };
 

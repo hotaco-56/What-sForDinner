@@ -10,8 +10,14 @@ const Restaurants = () => {
     price: "",
     min_rating: "",
   });
+  const city = "slo"; // Later, get city from user input
 
-  const fetchRestaurants = async () => {
+  const fetchRestaurants = async (city) => {
+    if (!city) {
+      console.error("City parameter is required!");
+      return Promise.reject("City parameter is required");
+    }
+
     let queryParams = new URLSearchParams();
 
     if (filters.searchQuery) queryParams.append("search", filters.searchQuery);
@@ -20,17 +26,20 @@ const Restaurants = () => {
     if (filters.min_rating > 0)
       queryParams.append("min_rating", filters.min_rating);
 
-    const promise = fetch(`http://localhost:8000/restaurants?${queryParams}`);
+    const promise = fetch(
+      `http://localhost:8000/restaurants/${city.toLowerCase()}?${queryParams}`,
+    );
     return promise;
   };
 
   useEffect(() => {
-    fetchRestaurants()
+    fetchRestaurants(city) 
       .then((res) => res.json())
-      .then((json) => setRestaurants(json["restaurants_list"]))
+      .then((json) => {
+        setRestaurants(json);
+      })
       .catch((error) => {
         console.log(error);
-        setRestaurants([]);
       });
   }, [filters]);
 

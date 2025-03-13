@@ -24,6 +24,7 @@ const ProfileCard = ({ user }) => {
       />
       <CardContent>
         <img src={user.profilePic} alt="Profile Picture" />
+        <p>Bio: {user.bio}</p>
         <p>Email: {user.email}</p>
         <p>Phone: {user.phone}</p>
         <p>Location: {user.location}</p>

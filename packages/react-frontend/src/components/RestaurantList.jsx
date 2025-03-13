@@ -82,7 +82,12 @@ const RestaurantCard = ({ restaurant }) => {
             ? restaurant.cuisines.join(", ")
             : "NA"}
         </p>
-        <p>Price Range: {restaurant.price_range_usd || "NA"}</p>
+        <p>
+          Price Range:{" "}
+          {restaurant.price_range_usd?.length > 0
+            ? restaurant.price_range_usd.join(" - ")
+            : "NA"}
+        </p>
         <p>Average Rating: {restaurant.rating || "NA"}</p>
         <p>Reviews: {restaurant.reviews || "NA"}</p>
         <p>Has Delivery: {restaurant.has_delivery ? "Yes" : "No"}</p>
@@ -136,8 +141,8 @@ const RestaurantList = (props) => {
         overflowX: "hidden",
       }}
     >
-      {props.restaurants.map((restaurant) => (
-        <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+      {(props.restaurants || []).map((restaurant) => (
+        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
       ))}
     </Box>
   );
