@@ -28,7 +28,7 @@ const RestaurantModal = ({ open, handleClose, selectedItem }) => {
         <img
           src={selectedItem.featured_image || "NA"}
           alt={selectedItem.name || "Unknown"}
-          style={{ width: "100%", height: "auto", marginBottom: "10px" }}
+          style={{ height: "175px", width: "auto", marginBottom: "10px" }}
         />
 
         <Typography sx={{ mt: 1 }}>

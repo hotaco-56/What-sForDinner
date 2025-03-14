@@ -47,7 +47,7 @@ const Home = () => {
 
   const handleStopSpinning = () => {
     setMustSpin(false);
-    setSelectedItem(restaurants[prizeNumber]); 
+    setSelectedItem(restaurants[prizeNumber]);
     setOpen(true);
   };
 
@@ -64,7 +64,21 @@ const Home = () => {
             mustSpin={mustSpin}
             prizeNumber={prizeNumber}
             onStopSpinning={handleStopSpinning}
-            data={restaurants.map((r) => ({ option: r.name }))}
+            data={restaurants.map((r, index) => ({
+              option: "",
+              style: {
+                backgroundColor: [
+                  "red",
+                  "blue",
+                  "green",
+                  "yellow",
+                  "purple",
+                  "orange",
+                  "pink",
+                  "brown",
+                ][index % 8],
+              },
+            }))}
           />
           <button onClick={handleSpinClick}>Spin the Wheel!</button>
         </>
