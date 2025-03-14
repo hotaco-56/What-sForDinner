@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Home Page</h1>
+      <h1>What's For Dinner?</h1>
       {restaurants.length > 0 ? (
         <>
           <CustomWheel
@@ -66,7 +66,7 @@ const Home = () => {
             onStopSpinning={handleStopSpinning}
             data={restaurants.map((r) => ({ option: r.name }))}
           />
-          <button onClick={handleSpinClick}>Spin the Wheel</button>
+          <button onClick={handleSpinClick}>Spin the Wheel!</button>
         </>
       ) : (
         <p>Loading restaurants or no restaurants found...</p>
