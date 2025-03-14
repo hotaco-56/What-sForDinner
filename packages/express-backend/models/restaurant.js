@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const restaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -28,4 +28,4 @@ const getRestaurantModel = (city) => {
   return mongoose.model(collectionName, restaurantSchema);
 };
 
-export { Restaurant, getRestaurantModel };
+module.exports = { Restaurant, getRestaurantModel };
