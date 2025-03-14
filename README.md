@@ -42,7 +42,8 @@ npm run lint - check for issues
 
 npm run format - format to prettier settings
 
-#Tech Spec
+# Tech Spec
+
 https://docs.google.com/document/d/100uOvXXVBDtUlq21Loc0mE9Szhwt9eZojN7OJvCMnuU/edit?usp=sharing
 
 
