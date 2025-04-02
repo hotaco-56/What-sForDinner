@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CustomWheel from "../components/Wheel";
+import CustomWheel from "../components/wheel";
 import RestaurantModal from "../components/RestaurantModal";
 
 const Home = () => {
