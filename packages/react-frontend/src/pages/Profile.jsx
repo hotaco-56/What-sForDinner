@@ -6,7 +6,7 @@ const Profile = () => {
 
   const fetchUser = () => {
     const promise = fetch(
-      "http://localhost:8000/users/67d1ffc9ff5e6d6ff11fb423",
+      "http://localhost:8000/users/67d1ffc9ff5e6d6ff11fb423"
     );
     return promise;
   };
@@ -23,7 +23,13 @@ const Profile = () => {
   return (
     <div>
       <h1>Profile</h1>
-      <ProfileCard user={user} />
+      {user ? (
+        <ProfileCard user={user} />
+      ) : (
+        <p style={{ color: "red", fontSize: "18px" }}>
+          Please log in to view your profile.
+        </p>
+      )}
     </div>
   );
 };
