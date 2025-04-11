@@ -1,0 +1,94 @@
+.search-filter-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding-left: 1rem;
+    overflow-x: hidden;
+  }
+  
+.search-field,
+  .rating-dropdown,
+  .type-dropdown,
+  .price-dropdown {
+    width: 150px;
+    background-color: #333333;
+  }
+  
+.search-field {
+    width: 200px;
+  }
+
+.rating-dropdown {
+    width: 200px;
+  }
+  
+.search-field .MuiInputLabel-root,
+  .rating-dropdown .MuiInputLabel-root,
+  .type-dropdown .MuiInputLabel-root,
+  .price-dropdown .MuiInputLabel-root {
+    color: white;
+  }
+
+.search-field .MuiInputLabel-root.Mui-focused,
+  .rating-dropdown .MuiInputLabel-root.Mui-focused,
+  .type-dropdown .MuiInputLabel-root.Mui-focused,
+  .price-dropdown .MuiInputLabel-root.Mui-focused {
+    color: var(--hover);
+  }
+  
+.search-field .MuiOutlinedInput-root fieldset,
+  .rating-dropdown .MuiOutlinedInput-root fieldset,
+  .type-dropdown .MuiOutlinedInput-root fieldset,
+  .price-dropdown .MuiOutlinedInput-root fieldset {
+    border-color: white;
+  }
+  
+.search-field .MuiOutlinedInput-root:hover fieldset,
+  .rating-dropdown .MuiOutlinedInput-root:hover fieldset,
+  .type-dropdown .MuiOutlinedInput-root:hover fieldset,
+  .price-dropdown .MuiOutlinedInput-root:hover fieldset {
+    border-color: white;
+  }
+  
+.search-field .Mui-focused fieldset,
+  .rating-dropdown .Mui-focused fieldset,
+  .type-dropdown .Mui-focused fieldset,
+  .price-dropdown .Mui-focused fieldset {
+    border-color: white;
+  }
+  
+.search-field input,
+  .rating-dropdown input,
+  .type-dropdown input,
+  .price-dropdown input {
+    color: white;
+  }
+  
+.search-field .MuiSelect-icon,
+  .rating-dropdown .MuiSelect-icon,
+  .type-dropdown .MuiSelect-icon,
+  .price-dropdown .MuiSelect-icon {
+    color: white;
+  }
+
+.search-field input {
+  color: white;
+}
+
+.search-field .MuiOutlinedInput-root.Mui-focused fieldset,
+.rating-dropdown .MuiOutlinedInput-root.Mui-focused fieldset,
+.type-dropdown .MuiOutlinedInput-root.Mui-focused fieldset,
+.price-dropdown .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: var(--hover);
+}
+  
+
+.rating-dropdown .MuiSelect-select,
+.type-dropdown .MuiSelect-select,
+.price-dropdown .MuiSelect-select {
+  color: white;
+}
+

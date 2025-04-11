@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomWheel from "../components/Wheel";
 import RestaurantModal from "../components/RestaurantModal";
+import '../CSS/home.css';
 
 const Home = () => {
   const [mustSpin, setMustSpin] = useState(false);
@@ -56,7 +57,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="home-container">
       <h1>What's For Dinner?</h1>
       {restaurants.length > 0 ? (
         <>
@@ -80,7 +81,7 @@ const Home = () => {
               },
             }))}
           />
-          <button onClick={handleSpinClick}>Spin the Wheel!</button>
+          <button className="spin-button" onClick={handleSpinClick}>Spin the Wheel!</button>
         </>
       ) : (
         <p>Loading restaurants or no restaurants found...</p>
