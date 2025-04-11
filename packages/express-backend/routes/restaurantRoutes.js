@@ -38,7 +38,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-
 router.post("/", async (req, res) => {
   const { city } = req.params;
   const Restaurant = getRestaurantModel(city);
