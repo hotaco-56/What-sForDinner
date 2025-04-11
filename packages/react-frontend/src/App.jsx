@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Restaurants from "./pages/Restaurants";
@@ -10,14 +10,28 @@ import Login from "./pages/Login";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track user authentication
+  const [isGuest, setIsGuest] = useState(false); // Track if the user is a guest
 
   return (
     <Router>
-      {isAuthenticated && <NavBar />}
+      {isAuthenticated && (
+        <NavBar
+          isAuthenticated={isAuthenticated}
+          isGuest={isGuest}
+          setIsAuthenticated={setIsAuthenticated}
+        />
+      )}
       <Routes>
-        {/* Redirect to Login if not authenticated */}
         {!isAuthenticated ? (
-          <Route path="*" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            path="*"
+            element={
+              <Login
+                setIsAuthenticated={setIsAuthenticated}
+                setIsGuest={setIsGuest}
+              />
+            }
+          />
         ) : (
           <>
             <Route path="/" element={<Home />} />

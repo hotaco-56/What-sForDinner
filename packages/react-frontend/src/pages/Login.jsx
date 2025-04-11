@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Link } from "@mui/material";
+import { Box, TextField, Button, Typography, Link, Snackbar, Alert } from "@mui/material";
 
 const Login = ({ setIsAuthenticated }) => {
   const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and sign-up
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // Track error messages
-
-  // Simple list to store user logins
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); // Simple list to store user logins
+  const [showSuccess, setShowSuccess] = useState(false); // Track success popup visibility
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,6 +24,7 @@ const Login = ({ setIsAuthenticated }) => {
       // Add the new user to the list
       setUsers([...users, { username, password }]);
       setIsSignUp(false); // Switch to sign-in mode
+      setShowSuccess(true); // Show success popup
     } else {
       // Check if the username and password match any user in the list
       const user = users.find(
@@ -118,6 +118,22 @@ const Login = ({ setIsAuthenticated }) => {
       >
         Continue as Guest
       </Button>
+
+      {/* Snackbar for success message */}
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={3000}
+        onClose={() => setShowSuccess(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Account created successfully! :)
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
