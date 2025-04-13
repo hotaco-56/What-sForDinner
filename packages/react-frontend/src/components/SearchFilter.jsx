@@ -1,5 +1,5 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import { Box, Button } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import {
@@ -21,7 +21,9 @@ const SearchBar = ({ filters, setFilters }) => {
       label="Search restaurant..."
       value={filters.searchQuery}
       onChange={handleChange}
-      sx={{ width: 200, backgroundColor: "#333333",
+      sx={{
+        width: 200,
+        backgroundColor: "#333333",
         "& .MuiInputLabel-root": {
           color: "white", // White label color
         },
@@ -31,20 +33,20 @@ const SearchBar = ({ filters, setFilters }) => {
           },
           "&:hover fieldset": {
             borderColor: "white",
-          },  
+          },
           "&.Mui-focused fieldset": {
             borderColor: "white", // Keep border white when focused
           },
           "& .MuiSelect-icon": {
-          color: "white", // Set the dropdown arrow color to white
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-          color: "white", // White color when focused
-        },
-        "& input": {
+            color: "white", // Set the dropdown arrow color to white
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "white", // White color when focused
+          },
+          "& input": {
             color: "white", // White text inside the input field
           },
-        }
+        },
       }}
     />
   );
@@ -66,7 +68,9 @@ const RatingDropdown = ({ filters, setFilters }) => {
       label="Minimum Rating"
       value={filters.min_rating}
       onChange={handleChange}
-      sx={{ width: 170, backgroundColor: "#333333",
+      sx={{
+        width: 170,
+        backgroundColor: "#333333",
         "& .MuiInputLabel-root": {
           color: "white", // White label color
         },
@@ -76,21 +80,21 @@ const RatingDropdown = ({ filters, setFilters }) => {
           },
           "&:hover fieldset": {
             borderColor: "white",
-          },  
+          },
           "&.Mui-focused fieldset": {
             borderColor: "white", // Keep border white when focused
           },
           "& .MuiSelect-icon": {
-          color: "white", // Set the dropdown arrow color to white
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-          color: "white", // White color when focused
-        },
-        "& input": {
+            color: "white", // Set the dropdown arrow color to white
+          },
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "white", // White color when focused
+          },
+          "& input": {
             color: "white", // White text inside the input field
           },
-        }
-       }}
+        },
+      }}
     >
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
@@ -122,7 +126,7 @@ const TypeDropdown = ({ filters, setFilters }) => {
       }
     };
 
-    fetchRestaurantTypes(city); 
+    fetchRestaurantTypes(city);
   }, []);
 
   const handleChange = (event) => {
@@ -138,7 +142,9 @@ const TypeDropdown = ({ filters, setFilters }) => {
       label="Type"
       value={filters.type}
       onChange={handleChange}
-      sx={{ width: 150, backgroundColor: "#333333", 
+      sx={{
+        width: 150,
+        backgroundColor: "#333333",
         "& .MuiInputLabel-root": {
           color: "white",
         },
@@ -148,21 +154,21 @@ const TypeDropdown = ({ filters, setFilters }) => {
           },
           "&:hover fieldset": {
             borderColor: "white",
-          },  
+          },
           "&.Mui-focused fieldset": {
             borderColor: "white",
           },
           "& .MuiSelect-icon": {
-          color: "white",
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-          color: "white",
-        },
-        "& input": {
             color: "white",
           },
-        }
-       }}
+          "& .MuiInputLabel-root.Mui-focused": {
+            color: "white",
+          },
+          "& input": {
+            color: "white",
+          },
+        },
+      }}
     >
       <MenuItem value="">All Types</MenuItem>
       {types.map((type) => (
@@ -190,7 +196,9 @@ const PriceDropdown = ({ filters, setFilters }) => {
       label="Price"
       value={filters.price}
       onChange={handleChange}
-      sx={{ width: 150, backgroundColor: "#333333",
+      sx={{
+        width: 150,
+        backgroundColor: "#333333",
         "& .MuiInputLabel-root": {
           color: "white", // White label color
         },
@@ -200,12 +208,12 @@ const PriceDropdown = ({ filters, setFilters }) => {
           },
           "&:hover fieldset": {
             borderColor: "white",
-          },  
+          },
           "&.Mui-focused fieldset": {
             borderColor: "white", // Keep border white when focused
           },
           "& .MuiSelect-icon": {
-          color: "white", // Set the dropdown arrow color to white
+            color: "white", // Set the dropdown arrow color to white
           },
           "& .MuiInputLabel-root.Mui-focused": {
             color: "white", // White color when focused
@@ -213,7 +221,7 @@ const PriceDropdown = ({ filters, setFilters }) => {
           "& input": {
             color: "white", // White text inside the input field
           },
-        }
+        },
       }}
     >
       <MenuItem value="">Any Price</MenuItem>
@@ -228,6 +236,13 @@ const PriceDropdown = ({ filters, setFilters }) => {
 
 //combines all filter components
 const SearchFilter = ({ filters, setFilters }) => {
+  const defaultFilters = {
+    searchQuery: "",
+    min_rating: 0,
+    type: "",
+    price: "",
+  };
+
   return (
     <Box
       sx={{
@@ -245,6 +260,20 @@ const SearchFilter = ({ filters, setFilters }) => {
       <RatingDropdown filters={filters} setFilters={setFilters} />
       <TypeDropdown filters={filters} setFilters={setFilters} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
+      <Button
+        variant="outlined"
+        sx={{
+          color: "white",
+          borderColor: "white",
+          "&:hover": {
+            backgroundColor: "#444444",
+            borderColor: "white",
+          },
+        }}
+        onClick={() => setFilters(defaultFilters)}
+      >
+        Reset
+      </Button>
     </Box>
   );
 };

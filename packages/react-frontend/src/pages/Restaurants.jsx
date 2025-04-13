@@ -33,7 +33,7 @@ const Restaurants = () => {
   };
 
   useEffect(() => {
-    fetchRestaurants(city) 
+    fetchRestaurants(city)
       .then((res) => res.json())
       .then((json) => {
         setRestaurants(json);
