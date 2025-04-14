@@ -6,34 +6,50 @@ const Login = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // Track error messages
-  const [users, setUsers] = useState([]); // Simple list to store user logins
   const [showSuccess, setShowSuccess] = useState(false); // Track success popup visibility
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage(""); // Clear any previous error messages
 
     if (isSignUp) {
-      // Check if the username already exists
-      const userExists = users.some((user) => user.username === username);
-      if (userExists) {
-        setErrorMessage("Username already exists. Please choose a different username.");
-        return;
-      }
+      try {
+        // Call the signup function from the backend
+        const response = await fetch("http://localhost:8000/users/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username : username, passwd: password }),
+        });
 
-      // Add the new user to the list
-      setUsers([...users, { username, password }]);
-      setIsSignUp(false); // Switch to sign-in mode
-      setShowSuccess(true); // Show success popup
+        console.log(username, password);
+
+        if (response.created) {
+          setShowSuccess(true); // Show success popup
+          setIsSignUp(false); // Switch to sign-in mode
+        } else {
+          const data = await response.json();
+          setErrorMessage(data.message || "Failed to create account.");
+        }
+      } catch (error) {
+        setErrorMessage("An error occurred. Please try again.");
+      }
     } else {
-      // Check if the username and password match any user in the list
-      const user = users.find(
-        (user) => user.username === username && user.password === password
-      );
-      if (user) {
-        setIsAuthenticated(true); // Simulate successful login
-      } else {
-        setErrorMessage("Username or password is incorrect.");
+      try {
+        // Call the login function from the backend
+        const response = await fetch("http://localhost:8000/users/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username : username, passwd : password }),
+        });
+
+        if (response.ok) {
+          setIsAuthenticated(true); // Simulate successful login
+        } else {
+          const data = await response.json();
+          setErrorMessage(data.message || "Invalid username or password.");
+        }
+      } catch (error) {
+        setErrorMessage("An error occurred. Please try again.");
       }
     }
 
