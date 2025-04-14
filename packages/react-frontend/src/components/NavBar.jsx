@@ -2,42 +2,34 @@ import { AppBar, Toolbar, Button, Box } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/hungryboy.png";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import "../CSS/NavBar.css";
 
 const NavBar = () => {
   return (
     <AppBar
+      className="navbar"
       position="fixed"
-      sx={{
-        backgroundColor: "#333333",
-        accentColor: "white",
-        borderBottom: "2px solid white",
-      }}
     >
-      <Toolbar
-      sx={{
-        justifyContent: "flex-start",
-        display: 'flex'
-      }}>
-        <Button component={NavLink} to="/" sx={{ mr: 2 }}>
-          <img
+      <Toolbar className="navbar-toolbar">
+        <Button className="navbar-logo-button" component={NavLink} to="/">
+          <img className="navbar-logo"
             src= {logo}
             alt= "HungryBoy"
-            style={{ height: "50px", width: "50px" }}
           />
         </Button>
-        <Button color="inherit" component={NavLink} to="/">
+        <Button className="navbar-button" component={NavLink} to="/">
           Home
         </Button>
-        <Button color="inherit" component={NavLink} to="/restaurants">
+        <Button className="navbar-button" component={NavLink} to="/restaurants">
           Restaurants
         </Button>
-        <Button color="inherit" component={NavLink} to="/favorites">
+        <Button className="navbar-button" component={NavLink} to="/favorites">
           Favorites
         </Button>
 
-        <Box sx={{ flexGrow: 1 }} />
+        <Box className="navbar-spacer" />
 
-        <Button color="inherit" component={NavLink} to="/profile">
+        <Button className="navbar-profile" component={NavLink} to="/profile">
           <AccountBoxIcon></AccountBoxIcon>
           Profile
         </Button>

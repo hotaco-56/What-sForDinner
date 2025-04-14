@@ -1,0 +1,39 @@
+/* home.css */
+
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0rem;
+    font-family: Tahoma, Verdana, sans-serif;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+  }
+  
+  
+  .spin-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* .spin-button:hover {
+    background-color: #f7ea75;
+  } */
+  
+  .result-text {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+    color: #007bff;
+  }
+  
