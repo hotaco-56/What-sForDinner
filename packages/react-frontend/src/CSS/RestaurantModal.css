@@ -48,19 +48,20 @@
   }
   
   .close-button {
-    margin-top: 20px;
+    margin-top: 40px;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    background-color: var(--background) !important;
+    /* background-color: var(--background) !important; */
     color: white !important;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
+    padding: 8px 20px;
+    border: 2px solid white !important;
+    /* border-radius: 4px; */
     cursor: pointer;
   }
   
   .close-button:hover {
     background-color: var(--hover) !important;
+    color: black !important;
   }
   

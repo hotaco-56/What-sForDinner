@@ -14,8 +14,12 @@
     position: relative;
     background-color: #333333 !important;
     color: white !important;
-    border: 2px solid;
+    border: 1px solid;
     border-color: white;
+  }
+
+  .restaurant-card:hover {
+    background-color: #454545 !important;
   }
 
   .restaurant-image {
