@@ -4,7 +4,7 @@
   "description": "what is for dinner",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
