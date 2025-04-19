@@ -85,3 +85,28 @@ Time:        3.043 s
 Ran all test suites.
 
 
+
+# Unit Test Coverage Report
+
+Ran 4/18 7:15 PM
+
+> express-backend@1.0.0 test:mocked
+> jest --testMatch="**/mockedTests/**/*.test.js"
+
+ PASS  mockedTests/mockedRestaurant.test.js
+ PASS  mockedTests/mockedUser.test.js
+
+ 
+---------------|---------|----------|---------|---------|-------------------
+File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------|---------|----------|---------|---------|-------------------
+All files      |     100 |      100 |     100 |     100 |                   
+ restaurant.js |     100 |      100 |     100 |     100 |                   
+ users.js      |     100 |      100 |     100 |     100 |                   
+---------------|---------|----------|---------|---------|-------------------
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        0.744 s, estimated 1 s
+Ran all test suites.
+
