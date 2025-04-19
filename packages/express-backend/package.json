@@ -5,6 +5,7 @@
   "scripts": {
     "test": "jest",
     "dev": "npx nodemon backend.js",
+    "test:mocked": "jest --testMatch=\"**/mockedTests/**/*.test.js\"",
     "start": "node backend.js"
   },
   "author": "",
