@@ -1,21 +1,28 @@
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/hungryboy.png";
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import "../CSS/NavBar.css";
 
-const NavBar = () => {
+const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("isGuest"); // Remove guest flag if present
+    setIsAuthenticated(false); // Update authentication state
+    navigate("/login"); // Redirect to login page
+  };
+
+  const handleSignIn = () => {
+    navigate("/login"); // Redirect to login page
+  };
+
   return (
-    <AppBar
-      className="navbar"
-      position="fixed"
-    >
+    <AppBar className="navbar" position="fixed">
       <Toolbar className="navbar-toolbar">
         <Button className="navbar-logo-button" component={NavLink} to="/">
-          <img className="navbar-logo"
-            src= {logo}
-            alt= "HungryBoy"
-          />
+          <img className="navbar-logo" src={logo} alt="HungryBoy" />
         </Button>
         <Button className="navbar-button" component={NavLink} to="/">
           Home
@@ -30,9 +37,30 @@ const NavBar = () => {
         <Box className="navbar-spacer" />
 
         <Button className="navbar-profile" component={NavLink} to="/profile">
-          <AccountBoxIcon></AccountBoxIcon>
+          <AccountBoxIcon />
           Profile
         </Button>
+
+        {/* Add Sign In or Sign Out button */}
+        {localStorage.getItem("isGuest") === "true" ? (
+          // If the user is a guest, show "Sign In"
+          <Button
+            className="navbar-button"
+            onClick={handleSignIn}
+            sx={{ color: "white" }}
+          >
+            Sign In
+          </Button>
+        ) : (
+          // If the user is not a guest, show "Sign Out"
+          <Button
+            className="navbar-button"
+            onClick={handleSignOut}
+            sx={{ color: "white" }}
+          >
+            Sign Out
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
