@@ -1,0 +1,43 @@
+.navbar {
+    background-color: #333333 !important;
+    border-bottom: 2px solid white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1100;
+  }
+  
+  .navbar-toolbar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  .navbar-logo-button {
+    margin-right: 16px;
+  }
+  
+  .navbar-logo {
+    height: 50px;
+    width: 50px;
+  }
+  
+  .navbar-button {
+    color: white;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  
+  .navbar-profile {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-transform: none;
+    font-weight: 500;
+  }
+  
+  .navbar-spacer {
+    flex-grow: 1;
+  }
+  

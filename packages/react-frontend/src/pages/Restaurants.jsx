@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RestaurantList from "../components/RestaurantList";
 import SearchFilter from "../components/SearchFilter";
+import "../CSS/restaurants.css"
 
 const Restaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -33,7 +34,7 @@ const Restaurants = () => {
   };
 
   useEffect(() => {
-    fetchRestaurants(city) 
+    fetchRestaurants(city)
       .then((res) => res.json())
       .then((json) => {
         setRestaurants(json);
@@ -44,7 +45,7 @@ const Restaurants = () => {
   }, [filters]);
 
   return (
-    <div>
+    <div className="restaurants-page">
       <h1>Restaurants</h1>
       <SearchFilter filters={filters} setFilters={setFilters} />
       <RestaurantList restaurants={restaurants} />

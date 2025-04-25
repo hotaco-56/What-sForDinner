@@ -72,6 +72,10 @@ router.post("/signup", async (req, res) => {
   const username = req.body.username;
   const passwd = req.body.passwd;
 
+  if (!username || !passwd) {
+    return res.status(400).send("invalid username and passwd");
+  }
+
   const user = await Users.exists({name : username});
 
   if (user) {

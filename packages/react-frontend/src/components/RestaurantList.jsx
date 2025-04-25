@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import StarIcon from "@mui/icons-material/Star";
+import "../CSS/RestaurantList.css";
 
 //create RestaurantCard component
 const RestaurantCard = ({ restaurant }) => {
@@ -17,11 +18,7 @@ const RestaurantCard = ({ restaurant }) => {
 
   return (
     <Card
-      sx={{
-        width: "275px",
-        flexShrink: 0,
-        position: "relative",
-      }}
+      className="restaurant-card"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -52,7 +49,7 @@ const RestaurantCard = ({ restaurant }) => {
         ))}
       <CardHeader title={restaurant.name} />
       <CardContent>
-        <p>
+        <p className="restaurant-image">
           {restaurant.featured_image ? (
             <img
               src={restaurant.featured_image}
@@ -67,7 +64,7 @@ const RestaurantCard = ({ restaurant }) => {
             "No image available"
           )}
         </p>
-        <p>
+        <p className="restaurant-link">
           {restaurant.link ? (
             <a href={restaurant.link} target="_blank" rel="noopener noreferrer">
               Visit Website
@@ -108,7 +105,7 @@ const RestaurantCard = ({ restaurant }) => {
         </p>
 
         {/* Reservation Link */}
-        <p>
+        <p className="restaurant-link">
           {restaurant.reservation_link ? (
             <a
               href={restaurant.reservation_link}
@@ -130,17 +127,7 @@ const RestaurantCard = ({ restaurant }) => {
 
 const RestaurantList = (props) => {
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        gap: 2,
-        padding: 2,
-        overflowX: "hidden",
-      }}
-    >
+    <Box className="restaurant-list">
       {(props.restaurants || []).map((restaurant) => (
         <RestaurantCard key={restaurant._id} restaurant={restaurant} />
       ))}
