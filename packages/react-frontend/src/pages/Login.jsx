@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Link, Snackbar, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuthenticated }) => {
   const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and sign-up
@@ -7,6 +8,7 @@ const Login = ({ setIsAuthenticated }) => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // Track error messages
   const [showSuccess, setShowSuccess] = useState(false); // Track success popup visibility
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,14 +20,14 @@ const Login = ({ setIsAuthenticated }) => {
         const response = await fetch("http://localhost:8000/users/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username : username, passwd: password }),
+          body: JSON.stringify({ username: username, passwd: password }),
         });
 
-        console.log(username, password);
-
-        if (response.created) {
+        if (response.ok) {
           setShowSuccess(true); // Show success popup
           setIsSignUp(false); // Switch to sign-in mode
+        } else if (response.status === 409) {
+          setErrorMessage("Username already exists."); // Specific error for duplicate username
         } else {
           const data = await response.json();
           setErrorMessage(data.message || "Failed to create account.");
@@ -39,11 +41,16 @@ const Login = ({ setIsAuthenticated }) => {
         const response = await fetch("http://localhost:8000/users/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username : username, passwd : password }),
+          body: JSON.stringify({ username: username, passwd: password }),
         });
 
         if (response.ok) {
-          setIsAuthenticated(true); // Simulate successful login
+          const token = await response.text();
+          localStorage.setItem("token", token); // Save token to localStorage
+          setIsAuthenticated(true); // Update authentication state
+          navigate("/"); // Redirect to home page
+        } else if (response.status === 401) {
+          setErrorMessage("Password is incorrect."); // Specific error for invalid password
         } else {
           const data = await response.json();
           setErrorMessage(data.message || "Invalid username or password.");
@@ -59,7 +66,9 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   const handleGuestAccess = () => {
+    localStorage.setItem("isGuest", "true"); // Track guest access
     setIsAuthenticated(true); // Grant access as a guest
+    navigate("/"); // Redirect to the homepage
   };
 
   return (
