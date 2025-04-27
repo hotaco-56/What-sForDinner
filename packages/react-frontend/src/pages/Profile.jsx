@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import ProfileCard from "../components/ProfileCard";
 
+
 const Profile = () => {
   const [user, setUser] = useState(null);
 
   const fetchUser = () => {
-    const promise = fetch(
-      "http://localhost:8000/users/67d1ffc9ff5e6d6ff11fb423"
-    );
-    return promise;
+    const token = localStorage.getItem("token");
+    return fetch("http://localhost:8000/users/current", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   };
 
   useEffect(() => {
@@ -24,7 +27,9 @@ const Profile = () => {
     <div>
       <h1>Profile</h1>
       {user ? (
-        <ProfileCard user={user} />
+        <>
+          <ProfileCard user={user} />
+        </>
       ) : (
         <p style={{ color: "red", fontSize: "18px" }}>
           Please log in to view your profile.

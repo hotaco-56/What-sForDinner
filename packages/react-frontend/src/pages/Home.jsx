@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomWheel from "../components/wheel";
 import RestaurantModal from "../components/RestaurantModal";
-import '../CSS/home.css';
+import "../CSS/home.css";
 
 const Home = () => {
   const [mustSpin, setMustSpin] = useState(false);
@@ -9,31 +9,88 @@ const Home = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = useState(false);
   const [restaurants, setRestaurants] = useState([]);
-  const city = "slo"; // Later, get city from user input
+  const [city, setCity] = useState("");
+  const [filters, setFilters] = useState({
+    searchQuery: "",
+    type: "",
+    price: "",
+    min_rating: "",
+  });
+  const [filtersLoaded, setFiltersLoaded] = useState(false);
 
-  useEffect(() => {
-    const fetchRestaurants = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:8000/restaurants/${city.toLowerCase()}`,
-        );
-        const data = await res.json();
+  const fetchLocation = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/users/current/location", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      setCity(data.location.toLowerCase());
+    } catch (err) {
+      console.error("Error fetching user location:", err);
+    }
+  };
 
-        // Ensure data is an array before setting state
-        if (Array.isArray(data) && data.length > 0) {
-          setRestaurants(data);
-        } else {
-          console.error("Invalid data format:", data);
-          setRestaurants([]);
-        }
-      } catch (error) {
-        console.error("Error fetching restaurants:", error);
+  const fetchFilters = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/users/current/filters", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      setFilters(data.filters);
+      setFiltersLoaded(true);
+    } catch (err) {
+      console.error("Error fetching filters:", err);
+    }
+  };
+
+  const fetchRestaurants = async (city, filters) => {
+    if (!city) {
+      console.error("City parameter is required!");
+      return Promise.reject("City parameter is required");
+    }
+
+    let queryParams = new URLSearchParams();
+
+    if (filters.searchQuery) queryParams.append("search", filters.searchQuery);
+    if (filters.type) queryParams.append("type", filters.type);
+    if (filters.price) queryParams.append("price", filters.price);
+    if (filters.min_rating > 0)
+      queryParams.append("min_rating", filters.min_rating);
+
+    try {
+      const res = await fetch(
+        `http://localhost:8000/restaurants/${city}?${queryParams}`,
+      );
+      const data = await res.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        setRestaurants(data);
+      } else {
+        console.error("Invalid data format or empty:", data);
         setRestaurants([]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching restaurants:", error);
+      setRestaurants([]);
+    }
+  };
 
-    fetchRestaurants();
+  // Get user's city first
+  useEffect(() => {
+    fetchLocation();
+    fetchFilters();
   }, []);
+
+  // Once city is known, fetch restaurants
+  useEffect(() => {
+    if (city && filtersLoaded) {
+      fetchRestaurants(city, filters);
+    }
+  }, [city, filters, filtersLoaded]);
 
   const handleSpinClick = () => {
     if (restaurants.length === 0) {
@@ -59,6 +116,23 @@ const Home = () => {
   return (
     <div className="home-container">
       <h1>What's For Dinner?</h1>
+      <div className="filters-display">
+        <p>
+          <strong>City:</strong> {city || "Loading city..."}
+        </p>
+        <p>
+          <strong>Search Query:</strong> {filters.searchQuery || "None"}
+        </p>
+        <p>
+          <strong>Type:</strong> {filters.type || "Any"}
+        </p>
+        <p>
+          <strong>Price:</strong> {filters.price || "Any"}
+        </p>
+        <p>
+          <strong>Minimum Rating:</strong> {filters.min_rating || "Any"}
+        </p>
+      </div>
       {restaurants.length > 0 ? (
         <>
           <CustomWheel
@@ -81,7 +155,9 @@ const Home = () => {
               },
             }))}
           />
-          <button className="spin-button" onClick={handleSpinClick}>Spin the Wheel!</button>
+          <button className="spin-button" onClick={handleSpinClick}>
+            Spin the Wheel!
+          </button>
         </>
       ) : (
         <p>Loading restaurants or no restaurants found...</p>

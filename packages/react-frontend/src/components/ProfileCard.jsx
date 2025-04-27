@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import LocationPicker from "./LocationPicker";
 
 const ProfileCard = ({ user }) => {
   if (!user) {
@@ -27,7 +28,7 @@ const ProfileCard = ({ user }) => {
         <p>Bio: {user.bio}</p>
         <p>Email: {user.email}</p>
         <p>Phone: {user.phone}</p>
-        <p>Location: {user.location}</p>
+        <LocationPicker token={localStorage.getItem("token")} />
       </CardContent>
     </Card>
   );

@@ -40,18 +40,13 @@ async function fetchRestaurants(page, location) {
     const restaurants = data.results || [];
 
     for (const restaurant of restaurants) {
-      const priceRange = restaurant.price_range_usd?.includes(" - ")
-        ? restaurant.price_range_usd.split(" - ")
-        : restaurant.price_range_usd
-          ? [restaurant.price_range_usd]
-          : [];
       const restaurantDetails = {
         id: restaurant.id,
         name: restaurant.name,
         link: restaurant.link,
         reviews: restaurant.reviews,
         rating: restaurant.rating,
-        price_range_usd: priceRange,
+        price_range_usd: restaurant.price_range_usd,
         menu_link: restaurant.menu_link,
         reservation_link: restaurant.reservation_link,
         featured_image: restaurant.featured_image,
@@ -79,28 +74,23 @@ async function fetchRestaurants(page, location) {
 }
 
 async function fetchAllRestaurants(location) {
-  await fetchRestaurants(1, location);
-  await fetchRestaurants(2, location);
-  await fetchRestaurants(3, location);
-  await fetchRestaurants(4, location);
-  await fetchRestaurants(5, location);
-  await fetchRestaurants(6, location);
-  await fetchRestaurants(7, location);
-  await fetchRestaurants(8, location);
-  await fetchRestaurants(9, location);
-  await fetchRestaurants(10, location);
-  await fetchRestaurants(11, location);
-  await fetchRestaurants(12, location);
-  await fetchRestaurants(13, location);
-  await fetchRestaurants(14, location);
-  await fetchRestaurants(15, location);
+  for (let i = 1; i <= 25; i++) {
+    await fetchRestaurants(i, location);
+  }
   console.log("all saves complete");
 }
 
-//sf pages 1-10, 300 restaurants
-//slo pages 1-5, 150 restaurants
-//nyc pages 1-15, 450 restaurnts
-//fetchAllRestaurants("New York City"); //DONT UNCOMMENT
+//slo pages 1-5, 148 restaurants
+//sf pages 1-25, 737 restaurants
+//nyc pages 1-25, 730 restaurnts
+//la pages 1-25, 729 restaurants
+//nola pages 1-25, 734 restaurants
+//chi pages 1-25, 721 restaurants
+//mia pages 1-25, 717 restaurants
+//atx pages 1-25, 713 restaurants
+//hnl pages 1-20, 585 restaurants //max api calls
+
+//fetchAllRestaurants("Honolulu"); //DONT UNCOMMENT
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

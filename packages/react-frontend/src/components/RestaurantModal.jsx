@@ -12,7 +12,8 @@ const RestaurantModal = ({ open, handleClose, selectedItem }) => {
           {selectedItem.name || "Unknown Restaurant"}
         </Typography>
 
-        <img className="modal-image"
+        <img
+          className="modal-image"
           src={selectedItem.featured_image || "NA"}
           alt={selectedItem.name || "Unknown"}
           style={{ height: "175px", width: "auto", marginBottom: "10px" }}
@@ -27,10 +28,7 @@ const RestaurantModal = ({ open, handleClose, selectedItem }) => {
         </Typography>
 
         <Typography className="modal-typography" sx={{ mt: 1 }}>
-          <strong>Price Range:</strong>{" "}
-          {selectedItem.price_range_usd.length > 0
-            ? selectedItem.price_range_usd.join(", ")
-            : "N/A"}
+          <strong>Price Range:</strong> {selectedItem.price_range_usd || "N/A"}
         </Typography>
 
         <Typography className="modal-typography" sx={{ mt: 1 }}>
@@ -72,9 +70,7 @@ const RestaurantModal = ({ open, handleClose, selectedItem }) => {
           </Typography>
         )}
 
-        <Button className="close-button"
-          onClick={handleClose}
-        >
+        <Button className="close-button" onClick={handleClose}>
           Close
         </Button>
       </Box>

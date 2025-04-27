@@ -6,26 +6,39 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 router.use(express.json());
 
-router.get("/id/:id", async (req, res) => {
-  try {
-    const userId = req.params.id.trim();
-    const user = await Users.findById(userId);
-    if (!user) {
-      return res.status(404).send("User not found.");
-    }
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-  }
-});
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-router.get("/username/:username", async (req, res) => {
-  const username = req.params.username;
-  console.log(username);
-  const user = await Users.find({name : username});
-  console.log(user);
-  res.json(user);
-});
+  if (!token) return res.sendStatus(401); // No token, unauthorized
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // Invalid token
+    req.user = user; // Add user info to request
+    next();
+  });
+}
+
+// router.get("/id/:id", async (req, res) => {
+//   try {
+//     const userId = req.params.id.trim();
+//     const user = await Users.findById(userId);
+//     if (!user) {
+//       return res.status(404).send("User not found.");
+//     }
+//     res.json(user);
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//   }
+// });
+
+// router.get("/username/:username", async (req, res) => {
+//   const username = req.params.username;
+//   console.log(username);
+//   const user = await Users.find({ name: username });
+//   console.log(user);
+//   res.json(user);
+// });
 
 router.get("/", async (req, res) => {
   const users = await Users.find();
@@ -41,12 +54,12 @@ function generateAccessToken(username) {
 router.post("/login", async (req, res) => {
   const username = req.body.username;
   const passwd = req.body.passwd;
- 
+
   if (!username || !passwd) {
     return res.status(400).send("Username and password are required");
   }
 
-  const user = await Users.findOne({name : username});
+  const user = await Users.findOne({ name: username });
 
   if (!user) {
     res.status(404).send("User not found");
@@ -76,58 +89,118 @@ router.post("/signup", async (req, res) => {
     return res.status(400).send("invalid username and passwd");
   }
 
-  const user = await Users.exists({name : username});
+  const user = await Users.exists({ name: username });
 
   if (user) {
     return res.status(409).send("Username already taken");
   } else {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPwd = await bcrypt.hash(String(passwd), salt);
-      const token = generateAccessToken(username);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPwd = await bcrypt.hash(String(passwd), salt);
+    const token = generateAccessToken(username);
 
-      console.log(username);
-      console.log(passwd);
+    console.log(username);
+    console.log(passwd);
 
-      const new_user = [
-        {
-          name: username,
-          passwd: hashedPwd,
-        }
-      ];
+    const new_user = [
+      {
+        name: username,
+        passwd: hashedPwd,
+      },
+    ];
 
-      console.log(new_user);
+    console.log(new_user);
 
-      await Users.create(new_user);
+    await Users.create(new_user);
 
-      console.log("JWT: ", token);
-      return res.status(201).send(token);        
+    console.log("JWT: ", token);
+    return res.status(201).send(token);
   }
 });
 
-//need to fix
-router.post("/", async (req, res) => {
+router.get("/current", authenticateToken, async (req, res) => {
   try {
-    const user = await Users.create(req.body);
-    res.status(201).json(user);
+    const user = await Users.findOne({ name: req.user.username });
+
+    if (!user) return res.status(404).send("User not found.");
+
+    res.json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error fetching current user:", error);
+    res.status(500).send("Internal server error");
   }
 });
 
-router.get("/:id/favorites", async (req, res) => {
+router.get("/current/location", authenticateToken, async (req, res) => {
   try {
-    const userId = req.params.id.trim();
-    const user = await Users.findById(userId);
+    const user = await Users.findOne({ name: req.user.username });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
+    if (!user) return res.status(404).send("User not found");
 
-    res.json({ favorites: user.favorites });
-  } catch (error) {
-    console.error("Error fetching user favorites:", error);
-    res.status(500).json({ message: "Internal server error." });
+    res.json({ location: user.location });
+  } catch (err) {
+    console.error("Error getting location:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+router.get("/current/filters", authenticateToken, async (req, res) => {
+  try {
+    const user = await Users.findOne({ name: req.user.username });
+
+    if (!user) return res.status(404).send("User not found");
+
+    res.json({ filters: user.filters });
+  } catch (err) {
+    console.error("Error getting filters:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+router.patch("/current/filters", authenticateToken, async (req, res) => {
+  try {
+    const { filters } = req.body;
+
+    const user = await Users.findOneAndUpdate(
+      { name: req.user.username },
+      { filters },
+      { new: true },
+    );
+
+    if (!user) return res.status(404).send("User not found");
+
+    res.json({
+      message: "Filters updated successfully",
+      filters: user.filters,
+    });
+  } catch (err) {
+    console.error("Error updating filters:", err);
+    res.status(500).send("Server error");
   }
 });
 
 export default router;
+
+router.patch("/current/location", authenticateToken, async (req, res) => {
+  try {
+    const { location } = req.body;
+
+    // Update the user's location
+    const user = await Users.findOneAndUpdate(
+      { name: req.user.username },
+      { location },
+      { new: true },
+    );
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    res.json({
+      message: "Location updated successfully",
+      location: user.location,
+    });
+  } catch (err) {
+    console.error("Error updating location:", err);
+    res.status(500).send("Server error");
+  }
+});
