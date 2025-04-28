@@ -3,72 +3,59 @@ import { Box, TextField, Button, Typography, Link, Snackbar, Alert } from "@mui/
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuthenticated }) => {
-  const [isSignUp, setIsSignUp] = useState(false); // Toggle between login and sign-up
+  const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Track error messages
-  const [showSuccess, setShowSuccess] = useState(false); // Track success popup visibility
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous error messages
+    setErrorMessage("");
 
-    if (isSignUp) {
-      try {
-        // Call the signup function from the backend
-        const response = await fetch("http://localhost:8000/users/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: username, passwd: password }),
-        });
+    try {
+      const endpoint = isSignUp ? 'signup' : 'login';
+      // Update the URL to include 'users' instead of 'user'
+      const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          username: username, 
+          passwd: password 
+        }),
+      });
 
-        if (response.ok) {
-          setShowSuccess(true); // Show success popup
-          setIsSignUp(false); // Switch to sign-in mode
-        } else if (response.status === 409) {
-          setErrorMessage("Username already exists."); // Specific error for duplicate username
-        } else {
-          const data = await response.json();
-          setErrorMessage(data.message || "Failed to create account.");
-        }
-      } catch (error) {
-        setErrorMessage("An error occurred. Please try again.");
+      // Add debugging
+      console.log('Response status:', response.status);
+
+      const data = await response.text();
+      console.log('Response data:', data);
+
+      if (response.ok) {
+        localStorage.setItem('authToken', data);
+        localStorage.removeItem('isGuest');
+        setIsAuthenticated(true);
+        setShowSuccess(true);
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        setErrorMessage(data || 'Authentication failed');
       }
-    } else {
-      try {
-        // Call the login function from the backend
-        const response = await fetch("http://localhost:8000/users/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: username, passwd: password }),
-        });
-
-        if (response.ok) {
-          const token = await response.text();
-          localStorage.setItem("token", token); // Save token to localStorage
-          setIsAuthenticated(true); // Update authentication state
-          navigate("/"); // Redirect to home page
-        } else if (response.status === 401) {
-          setErrorMessage("Password is incorrect."); // Specific error for invalid password
-        } else {
-          const data = await response.json();
-          setErrorMessage(data.message || "Invalid username or password.");
-        }
-      } catch (error) {
-        setErrorMessage("An error occurred. Please try again.");
-      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setErrorMessage('Network error. Please try again.');
     }
-
-    // Clear the input fields
-    setUsername("");
-    setPassword("");
   };
 
   const handleGuestAccess = () => {
-    localStorage.setItem("isGuest", "true"); // Track guest access
-    setIsAuthenticated(true); // Grant access as a guest
-    navigate("/"); // Redirect to the homepage
+    localStorage.setItem("isGuest", "true");
+    localStorage.removeItem("authToken"); // Remove any existing auth token
+    setIsAuthenticated(true);
+    navigate("/");
   };
 
   return (
@@ -92,6 +79,7 @@ const Login = ({ setIsAuthenticated }) => {
       </Typography>
       <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "400px" }}>
         <TextField
+          required
           fullWidth
           label="Username"
           variant="outlined"
@@ -100,6 +88,7 @@ const Login = ({ setIsAuthenticated }) => {
           sx={{ mb: 2, bgcolor: "white" }}
         />
         <TextField
+          required
           fullWidth
           label="Password"
           type="password"
@@ -123,8 +112,11 @@ const Login = ({ setIsAuthenticated }) => {
       <Typography>
         {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
         <Link
-          href="#"
-          onClick={() => setIsSignUp(!isSignUp)}
+          component="button"
+          onClick={() => {
+            setIsSignUp(!isSignUp);
+            setErrorMessage("");
+          }}
           sx={{ color: "#1976d2", cursor: "pointer" }}
         >
           {isSignUp ? "Sign In" : "Create an Account"}
@@ -144,10 +136,9 @@ const Login = ({ setIsAuthenticated }) => {
         Continue as Guest
       </Button>
 
-      {/* Snackbar for success message */}
       <Snackbar
         open={showSuccess}
-        autoHideDuration={3000}
+        autoHideDuration={2000}
         onClose={() => setShowSuccess(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
@@ -156,7 +147,7 @@ const Login = ({ setIsAuthenticated }) => {
           severity="success"
           sx={{ width: "100%" }}
         >
-          Account created successfully! :)
+          {isSignUp ? "Account created successfully!" : "Login successful!"}
         </Alert>
       </Snackbar>
     </Box>

@@ -15,7 +15,7 @@ const port = 8000;
 
 app.use(cors());
 app.use(express.json());
-
+app.use("/users", userRoutes);
 connectDB();
 
 const options = {

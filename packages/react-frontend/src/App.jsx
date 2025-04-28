@@ -9,49 +9,107 @@ import Login from "./pages/Login";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if the user is authenticated (e.g., check localStorage or token)
-    const token = localStorage.getItem("token");
-    const isGuest = localStorage.getItem("isGuest") === "true";
-    setIsAuthenticated(!!token || isGuest); // Set to true if a token exists or the user is a guest
+    const verifyAuth = async () => {
+      const token = localStorage.getItem("authToken");
+      const isGuest = localStorage.getItem("isGuest") === "true";
+
+      if (token) {
+        try {
+          const response = await fetch("http://localhost:8000/users/verify", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (response.ok) {
+            setIsAuthenticated(true);
+          } else {
+            localStorage.removeItem("authToken");
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error("Token verification error:", error);
+          setIsAuthenticated(false);
+        }
+      } else {
+        setIsAuthenticated(isGuest);
+      }
+      setLoading(false);
+    };
+
+    verifyAuth();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
-      <Routes>
-        {/* Login route */}
-        <Route
-          path="/login"
-          element={<Login setIsAuthenticated={setIsAuthenticated} />}
-        />
-        {/* Protected routes */}
-        {isAuthenticated ? (
-          <>
-            {/* Render NavBar only for authenticated users */}
-            <Route
-              path="*"
-              element={
-                <>
-                  <NavBar
-                    isAuthenticated={isAuthenticated}
-                    setIsAuthenticated={setIsAuthenticated}
-                  />
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/restaurants" element={<Restaurants />} />
-                    <Route path="/favorites" element={<Favorites />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </Routes>
-                </>
-              }
-            />
-          </>
-        ) : (
-          // Redirect to login if not authenticated
-          <Route path="*" element={<Navigate to="/login" />} />
+      <div>
+        {isAuthenticated && (
+          <NavBar
+            isAuthenticated={isAuthenticated}
+            setIsAuthenticated={setIsAuthenticated}
+          />
         )}
-      </Routes>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Home />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              !isAuthenticated ? (
+                <Login setIsAuthenticated={setIsAuthenticated} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/restaurants"
+            element={
+              isAuthenticated ? (
+                <Restaurants />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              isAuthenticated ? (
+                <Favorites />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              isAuthenticated ? (
+                <Profile />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -12,8 +12,51 @@ const RestaurantCard = ({ restaurant }) => {
   const [hover, setHover] = useState(false);
   const [favorited, setFavorited] = useState(false);
 
-  const toggleFavorite = () => {
-    setFavorited((prev) => !prev);
+  const checkFavoriteStatus = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    try {
+      const response = await fetch("http://localhost:8000/users/details", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setFavorited(userData.favorites.includes(restaurant._id));
+      }
+    } catch (error) {
+      console.error("Error checking favorite status:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkFavoriteStatus();
+  }, [restaurant._id, favorited]); // Add favorited to dependency array
+
+  const toggleFavorite = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    try {
+      const response = await fetch("http://localhost:8000/users/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ restaurantId: restaurant._id }),
+      });
+
+      if (response.ok) {
+        setFavorited(!favorited);
+        await checkFavoriteStatus(); // Refresh favorite status after toggle
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
   };
 
   return (
