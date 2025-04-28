@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
+import FunnyAd from "../components/FunnyAd";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -12,6 +13,7 @@ const Profile = () => {
     phone: "",
     profilePic: "",
   });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const fetchUserDetails = async () => {
     try {
@@ -56,8 +58,7 @@ const Profile = () => {
         const updatedUser = await response.json();
         setUser(updatedUser.user);
         setIsEditing(false);
-        // Show success message or notification
-        alert("Profile updated successfully!");
+        setShowSuccess(true); // Show success Snackbar
       } else {
         const errorData = await response.json();
         alert(errorData.message || "Failed to update profile");
@@ -102,13 +103,15 @@ const Profile = () => {
       {!isEditing ? (
         <>
           <img
-            src={user.profilePic || "https://via.placeholder.com/150"}
+            src={user.profilePic || "https://via.placeholder.com/300"}
             alt="Profile"
             style={{
               borderRadius: "50%",
-              width: "150px",
-              height: "150px",
-              border: "2px solid white",
+              width: "300px", 
+              height: "300px", 
+              border: "3px solid white",
+              marginBottom: "20px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
           />
           <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
@@ -181,6 +184,29 @@ const Profile = () => {
           </Box>
         </Box>
       )}
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={3000}
+        onClose={() => setShowSuccess(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setShowSuccess(false)}
+          severity="success"
+          variant="filled"
+          sx={{
+            width: "100%",
+            bgcolor: "#4caf50",
+            color: "white",
+            "& .MuiAlert-icon": {
+              color: "white"
+            }
+          }}
+        >
+          Changes have been saved :)
+        </Alert>
+      </Snackbar>
+      <FunnyAd />
     </div>
   );
 };

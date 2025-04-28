@@ -79,11 +79,13 @@ router.post("/signup", async (req, res) => {
     return res.status(400).send("Invalid username and password");
   }
 
-  const userExists = await Users.exists({ name: username });
+  try {
+    const userExists = await Users.exists({ name: username });
 
-  if (userExists) {
-    return res.status(409).send("Username already taken");
-  } else {
+    if (userExists) {
+      return res.status(409).send("Username already taken");
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPwd = await bcrypt.hash(String(passwd), salt);
     const token = jwt.sign({ username }, process.env.TOKEN_SECRET, {
@@ -92,12 +94,15 @@ router.post("/signup", async (req, res) => {
 
     const newUser = {
       name: username,
+      displayName: username, // Initialize display name as username
       passwd: hashedPwd,
     };
 
     await Users.create(newUser);
-
     res.status(201).send(token);
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).send("Internal server error");
   }
 });
 
@@ -105,7 +110,7 @@ router.post("/signup", async (req, res) => {
 router.put("/update", authenticateToken, async (req, res) => {
   try {
     const username = req.user.username;
-    const { bio, email, phone, profilePic } = req.body;
+    const { bio, email, phone, profilePic, displayName } = req.body;
 
     // Validate email format
     if (email && !/^\S+@\S+\.\S+$/.test(email)) {
@@ -123,6 +128,7 @@ router.put("/update", authenticateToken, async (req, res) => {
     }
 
     // Update user details
+    if (displayName) user.displayName = displayName;
     if (bio) user.bio = bio;
     if (email) user.email = email;
     if (phone) user.phone = phone;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomWheel from "../components/wheel";
 import RestaurantModal from "../components/RestaurantModal";
+import FunnyAd from "../components/FunnyAd";
 import '../CSS/home.css';
 
 const Home = () => {
@@ -93,6 +94,8 @@ const Home = () => {
         handleClose={handleClose}
         selectedItem={selectedItem}
       />
+
+      <FunnyAd />
     </div>
   );
 };

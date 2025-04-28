@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RestaurantList from "../components/RestaurantList";
 import SearchFilter from "../components/SearchFilter";
+import FunnyAd from "../components/FunnyAd";
 import "../CSS/restaurants.css"
 
 const Restaurants = () => {
@@ -49,6 +50,7 @@ const Restaurants = () => {
       <h1>Restaurants</h1>
       <SearchFilter filters={filters} setFilters={setFilters} />
       <RestaurantList restaurants={restaurants} />
+      <FunnyAd />
     </div>
   );
 };
