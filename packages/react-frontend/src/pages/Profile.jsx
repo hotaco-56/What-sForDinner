@@ -6,7 +6,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({
-    name: "",
+    displayName: "",
     bio: "",
     email: "",
     phone: "",
@@ -72,11 +72,10 @@ const Profile = () => {
     fetchUserDetails();
   }, []);
 
-  // Add this useEffect to initialize editedUser when user data is loaded
   useEffect(() => {
     if (user) {
       setEditedUser({
-        name: user.name || "",
+        displayName: user.displayName || user.name,
         bio: user.bio || "",
         email: user.email || "",
         phone: user.phone || "",
@@ -99,7 +98,7 @@ const Profile = () => {
 
   return (
     <div style={{ textAlign: "center", marginTop: "20px", color: "white" }}>
-      <h1>Profile</h1>
+      <h1>{user.displayName || user.name}</h1>
       {!isEditing ? (
         <>
           <img
@@ -112,7 +111,6 @@ const Profile = () => {
               border: "2px solid white",
             }}
           />
-          <h2>{user.name}</h2>
           <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
             <p><strong>Bio:</strong> {user.bio || "No bio available"}</p>
             <p><strong>Email:</strong> {user.email || "No email available"}</p>
@@ -131,8 +129,8 @@ const Profile = () => {
           <TextField
             fullWidth
             label="Display Name"
-            value={editedUser.name}
-            onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
+            value={editedUser.displayName}
+            onChange={(e) => setEditedUser({ ...editedUser, displayName: e.target.value })}
             sx={{ mb: 2, bgcolor: "white" }}
           />
           <TextField
