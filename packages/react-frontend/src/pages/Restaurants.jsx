@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import RestaurantList from "../components/RestaurantList";
 import SearchFilter from "../components/SearchFilter";
+import FunnyAd from "../components/FunnyAd";
 import "../CSS/restaurants.css";
 
 const Restaurants = () => {
@@ -16,9 +17,9 @@ const Restaurants = () => {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/current/location", {
+      const res = await fetch("http://localhost:8000/users/location", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       const data = await res.json();
@@ -30,9 +31,9 @@ const Restaurants = () => {
 
   const fetchFilters = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/current/filters", {
+      const res = await fetch("http://localhost:8000/users/filters", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       const data = await res.json();
@@ -45,11 +46,11 @@ const Restaurants = () => {
 
   const saveFilters = async (newFilters) => {
     try {
-      await fetch("http://localhost:8000/users/current/filters", {
+      await fetch("http://localhost:8000/users/filters", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify({ filters: newFilters }),
       });
@@ -105,6 +106,7 @@ const Restaurants = () => {
       <h1>Restaurants</h1>
       <SearchFilter filters={filters} setFilters={setFilters} city={city} />
       <RestaurantList restaurants={restaurants} />
+      <FunnyAd />
     </div>
   );
 };

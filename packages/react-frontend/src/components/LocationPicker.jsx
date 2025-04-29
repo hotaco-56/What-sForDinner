@@ -9,10 +9,10 @@ const LocationPicker = ({ token }) => {
     "San Francisco": "sf",
     "Los Angeles": "la",
     "New York City": "nyc",
-    "Chicago": "chi",
-    "Miami": "mia",
-    "Austin": "atx",
-    "Honolulu": "hnl",
+    Chicago: "chi",
+    Miami: "mia",
+    Austin: "atx",
+    Honolulu: "hnl",
     "New Orleans": "nola",
   };
 
@@ -25,15 +25,12 @@ const LocationPicker = ({ token }) => {
   useEffect(() => {
     const fetchCurrentLocation = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/users/current/location",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch("http://localhost:8000/users/location", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -55,17 +52,14 @@ const LocationPicker = ({ token }) => {
     setSelectedLocation(newLocation);
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/users/current/location",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ location: newLocation }),
+      const response = await fetch("http://localhost:8000/users/location", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({ location: newLocation }),
+      });
 
       if (!response.ok) {
         const errorText = await response.text();

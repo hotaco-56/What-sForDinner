@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomWheel from "../components/wheel";
 import RestaurantModal from "../components/RestaurantModal";
+import FunnyAd from "../components/FunnyAd";
 import "../CSS/home.css";
 
 const Home = () => {
@@ -20,9 +21,9 @@ const Home = () => {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/current/location", {
+      const res = await fetch("http://localhost:8000/users/location", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       const data = await res.json();
@@ -34,9 +35,9 @@ const Home = () => {
 
   const fetchFilters = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/current/filters", {
+      const res = await fetch("http://localhost:8000/users/filters", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       const data = await res.json();
@@ -169,6 +170,7 @@ const Home = () => {
         handleClose={handleClose}
         selectedItem={selectedItem}
       />
+      <FunnyAd />
     </div>
   );
 };

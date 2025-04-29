@@ -8,7 +8,7 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleSignOut = () => {
-    localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("authToken"); // Remove token from localStorage
     localStorage.removeItem("isGuest"); // Remove guest flag if present
     setIsAuthenticated(false); // Update authentication state
     navigate("/login"); // Redirect to login page
@@ -16,6 +16,9 @@ const NavBar = ({ isAuthenticated, setIsAuthenticated }) => {
 
   const handleSignIn = () => {
     navigate("/login"); // Redirect to login page
+    localStorage.removeItem("isGuest");
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   return (

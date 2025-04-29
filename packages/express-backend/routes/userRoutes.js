@@ -2,43 +2,31 @@ import express from "express";
 import Users from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import authenticateToken from "./authMiddleware.js";
 
 const router = express.Router();
 router.use(express.json());
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+router.get("/id/:id", async (req, res) => {
+  try {
+    const userId = req.params.id.trim();
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+});
 
-  if (!token) return res.sendStatus(401); // No token, unauthorized
-
-  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403); // Invalid token
-    req.user = user; // Add user info to request
-    next();
-  });
-}
-
-// router.get("/id/:id", async (req, res) => {
-//   try {
-//     const userId = req.params.id.trim();
-//     const user = await Users.findById(userId);
-//     if (!user) {
-//       return res.status(404).send("User not found.");
-//     }
-//     res.json(user);
-//   } catch (error) {
-//     console.error("Error fetching user:", error);
-//   }
-// });
-
-// router.get("/username/:username", async (req, res) => {
-//   const username = req.params.username;
-//   console.log(username);
-//   const user = await Users.find({ name: username });
-//   console.log(user);
-//   res.json(user);
-// });
+router.get("/username/:username", async (req, res) => {
+  const username = req.params.username;
+  console.log(username);
+  const user = await Users.find({ name: username });
+  console.log(user);
+  res.json(user);
+});
 
 router.get("/", async (req, res) => {
   const users = await Users.find();
@@ -117,20 +105,101 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-router.get("/current", authenticateToken, async (req, res) => {
+// Route to update user details (bio, email, phone, profilePic)
+router.put("/update", authenticateToken, async (req, res) => {
   try {
-    const user = await Users.findOne({ name: req.user.username });
+    const username = req.user.username;
+    const { bio, email, phone, profilePic, displayName } = req.body;
 
-    if (!user) return res.status(404).send("User not found.");
+    // Validate email format
+    if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+      return res.status(400).json({ message: "Invalid email format." });
+    }
 
-    res.json(user);
+    // Validate phone format (basic validation)
+    if (phone && !/^\d{10}$/.test(phone)) {
+      return res.status(400).json({ message: "Invalid phone number format." });
+    }
+
+    const user = await Users.findOne({ name: username });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Update user details
+    if (displayName) user.displayName = displayName;
+    if (bio) user.bio = bio;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (profilePic) user.profilePic = profilePic;
+
+    await user.save();
+    res
+      .status(200)
+      .json({ message: "User details updated successfully.", user });
   } catch (error) {
-    console.error("Error fetching current user:", error);
-    res.status(500).send("Internal server error");
+    console.error("Error updating user details:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 });
 
-router.get("/current/location", authenticateToken, async (req, res) => {
+// Route to get user details (including favorites)
+router.get("/details", authenticateToken, async (req, res) => {
+  try {
+    const username = req.user.username;
+    const user = await Users.findOne({ name: username }).select("-passwd");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Add route to toggle favorite status
+router.post("/favorites", authenticateToken, async (req, res) => {
+  try {
+    const username = req.user.username;
+    const { restaurantId } = req.body;
+
+    const user = await Users.findOne({ name: username });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const favoriteIndex = user.favorites.indexOf(restaurantId);
+    if (favoriteIndex === -1) {
+      // Add to favorites
+      user.favorites.push(restaurantId);
+    } else {
+      // Remove from favorites
+      user.favorites.splice(favoriteIndex, 1);
+    }
+
+    await user.save();
+    res.status(200).json({ favorites: user.favorites });
+  } catch (error) {
+    console.error("Error updating favorites:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Add verify token route
+router.get("/verify", authenticateToken, (req, res) => {
+  try {
+    res.status(200).json({ valid: true });
+  } catch (error) {
+    console.error("Token verification error:", error);
+    res.status(401).json({ message: "Invalid token" });
+  }
+});
+
+router.get("/location", authenticateToken, async (req, res) => {
   try {
     const user = await Users.findOne({ name: req.user.username });
 
@@ -143,7 +212,7 @@ router.get("/current/location", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("/current/filters", authenticateToken, async (req, res) => {
+router.get("/filters", authenticateToken, async (req, res) => {
   try {
     const user = await Users.findOne({ name: req.user.username });
 
@@ -156,7 +225,7 @@ router.get("/current/filters", authenticateToken, async (req, res) => {
   }
 });
 
-router.patch("/current/filters", authenticateToken, async (req, res) => {
+router.patch("/filters", authenticateToken, async (req, res) => {
   try {
     const { filters } = req.body;
 
@@ -178,9 +247,7 @@ router.patch("/current/filters", authenticateToken, async (req, res) => {
   }
 });
 
-export default router;
-
-router.patch("/current/location", authenticateToken, async (req, res) => {
+router.patch("/location", authenticateToken, async (req, res) => {
   try {
     const { location } = req.body;
 
@@ -204,3 +271,5 @@ router.patch("/current/location", authenticateToken, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+export default router;
