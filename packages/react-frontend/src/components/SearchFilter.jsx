@@ -1,5 +1,5 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import { Box, Button } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import {
@@ -44,7 +44,6 @@ const RatingDropdown = ({ filters, setFilters }) => {
       label="Minimum Rating"
       value={filters.min_rating}
       onChange={handleChange}
-      
     >
       <MenuItem value={0}>Any</MenuItem>
       {ratingOptions.map((rating) => (
@@ -56,12 +55,11 @@ const RatingDropdown = ({ filters, setFilters }) => {
   );
 };
 
-const TypeDropdown = ({ filters, setFilters }) => {
+const TypeDropdown = ({ filters, setFilters, city }) => {
   const [types, setTypes] = useState([]);
-  const city = "slo";
 
   useEffect(() => {
-    const fetchRestaurantTypes = async (city) => {
+    const fetchRestaurantTypes = async () => {
       try {
         const response = await fetch(
           `http://localhost:8000/restaurants/${city.toLowerCase()}`,
@@ -76,8 +74,8 @@ const TypeDropdown = ({ filters, setFilters }) => {
       }
     };
 
-    fetchRestaurantTypes(city); 
-  }, []);
+    if (city) fetchRestaurantTypes();
+  }, [city]);
 
   const handleChange = (event) => {
     setFilters((prevFilters) => ({
@@ -93,7 +91,6 @@ const TypeDropdown = ({ filters, setFilters }) => {
       label="Type"
       value={filters.type}
       onChange={handleChange}
-      
     >
       <MenuItem value="">All Types</MenuItem>
       {types.map((type) => (
@@ -106,7 +103,7 @@ const TypeDropdown = ({ filters, setFilters }) => {
 };
 
 const PriceDropdown = ({ filters, setFilters }) => {
-  const priceOptions = ["$", "$$", "$$$", "$$$$"];
+  const priceOptions = ["$", "$$ - $$$", "$$$$"];
 
   const handleChange = (event) => {
     setFilters((prevFilters) => ({
@@ -134,13 +131,25 @@ const PriceDropdown = ({ filters, setFilters }) => {
 };
 
 //combines all filter components
-const SearchFilter = ({ filters, setFilters }) => {
+const SearchFilter = ({ filters, setFilters, city }) => {
+  const defaultFilters = {
+    searchQuery: "",
+    min_rating: 0,
+    type: "",
+    price: "",
+  };
+
   return (
     <Box className="search-filter-container">
       <SearchBar filters={filters} setFilters={setFilters} />
       <RatingDropdown filters={filters} setFilters={setFilters} />
-      <TypeDropdown filters={filters} setFilters={setFilters} />
+      <TypeDropdown filters={filters} setFilters={setFilters} city={city} />
       <PriceDropdown filters={filters} setFilters={setFilters} />
+      <Button
+        onClick={() => setFilters(defaultFilters)}
+      >
+        Reset
+      </Button>
     </Box>
   );
 };

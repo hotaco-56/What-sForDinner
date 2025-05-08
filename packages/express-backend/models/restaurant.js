@@ -6,7 +6,7 @@ const restaurantSchema = new mongoose.Schema({
   link: String,
   reviews: Number,
   rating: Number,
-  price_range_usd: [String],
+  price_range_usd: String,
   menu_link: String,
   reservation_link: String,
   featured_image: String,
@@ -30,4 +30,4 @@ const getRestaurantModel = (city) => {
 };
 
 // module.exports = { Restaurant, getRestaurantModel };
-export {Restaurant, getRestaurantModel};
+export { Restaurant, getRestaurantModel };
