@@ -92,3 +92,12 @@
   color: white;
 }
 
+button {
+  background-color: var(--secondary-background) !important;
+  color: white !important;
+}
+
+button:hover {
+  background-color: var(--hover) !important;
+  color: black !important;
+}
