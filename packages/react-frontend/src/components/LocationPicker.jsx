@@ -28,7 +28,7 @@ const LocationPicker = ({ token }) => {
         const response = await fetch("http://localhost:8000/users/location", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
 
@@ -56,7 +56,7 @@ const LocationPicker = ({ token }) => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
         body: JSON.stringify({ location: newLocation }),
       });
