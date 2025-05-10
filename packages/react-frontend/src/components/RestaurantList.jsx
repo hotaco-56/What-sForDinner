@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
@@ -8,13 +8,9 @@ import StarIcon from "@mui/icons-material/Star";
 import "../CSS/RestaurantList.css";
 
 //create RestaurantCard component
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
   const [hover, setHover] = useState(false);
-  const [favorited, setFavorited] = useState(false);
-
-  const toggleFavorite = () => {
-    setFavorited((prev) => !prev);
-  };
+  const isFavorited = userFavorites.some((fav) => fav.name === restaurant.name);
 
   return (
     <Card
@@ -22,8 +18,8 @@ const RestaurantCard = ({ restaurant }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {(hover || favorited) && // Show star if hovered or favorited
-        (favorited ? (
+      {(hover || isFavorited) && // Show star if hovered or favorited
+        (isFavorited ? (
           <StarIcon
             sx={{
               position: "absolute",
@@ -32,7 +28,7 @@ const RestaurantCard = ({ restaurant }) => {
               cursor: "pointer",
               color: "gold",
             }}
-            onClick={toggleFavorite}
+            onClick={() => onToggleFavorite(restaurant)}
           />
         ) : (
           <StarBorderIcon
@@ -44,7 +40,7 @@ const RestaurantCard = ({ restaurant }) => {
               color: "primary",
               "&:hover": { color: "gold" },
             }}
-            onClick={toggleFavorite}
+            onClick={() => onToggleFavorite(restaurant)}
           />
         ))}
       <CardHeader title={restaurant.name} />
@@ -120,11 +116,52 @@ const RestaurantCard = ({ restaurant }) => {
 
 //list all restaurant using RestaurantCard component
 
-const RestaurantList = (props) => {
+const RestaurantList = ({ restaurants }) => {
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/users/details", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const data = await res.json();
+        setFavorites(data.favorites || []);
+      } catch (error) {
+        console.log("Error fetching user details:", error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  const toggleFavorite = async (restaurant) => {
+    try {
+      const res = await fetch("http://localhost:8000/users/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify({ restaurant }),
+      });
+      const data = await res.json();
+      setFavorites(data.favorites || []);
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
+  };
+
   return (
     <Box className="restaurant-list">
-      {(props.restaurants || []).map((restaurant) => (
-        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+      {restaurants.map((restaurant) => (
+        <RestaurantCard
+          key={restaurant._id}
+          restaurant={restaurant}
+          userFavorites={favorites}
+          onToggleFavorite={toggleFavorite}
+        />
       ))}
     </Box>
   );
