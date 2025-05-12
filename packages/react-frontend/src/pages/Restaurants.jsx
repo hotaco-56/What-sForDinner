@@ -18,21 +18,22 @@ const Restaurants = () => {
 
   const fetchLocation = async () => {
     try {
-      let res;
       if (localStorage.getItem("authToken")) {
-        res = await fetch("http://localhost:8000/users/location", {
+        const res = await fetch("http://localhost:8000/users/location", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
+        const data = await res.json();
+        setCity((data.location || "slo").toLowerCase());
       } else {
-        // Use guest endpoint if not authenticated
-        res = await fetch("http://localhost:8000/users/guest/location");
+        // For guests, read from localStorage
+        const guestLocation = localStorage.getItem("guestLocation") || "slo";
+        setCity(guestLocation.toLowerCase());
       }
-      const data = await res.json();
-      setCity((data.location || "slo").toLowerCase());
     } catch (err) {
-      setCity("slo");
+      const defaultLocation = localStorage.getItem("guestLocation") || "slo";
+      setCity(defaultLocation.toLowerCase());
       console.error("Error fetching location:", err);
     }
   };

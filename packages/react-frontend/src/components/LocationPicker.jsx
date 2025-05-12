@@ -26,27 +26,27 @@ const LocationPicker = ({ token, onLocationChange }) => {
           });
           if (!response.ok) throw new Error(await response.text());
           const data = await response.json();
-          setSelectedLocation(data.location || "slo");
-          onLocationChange && onLocationChange(data.location || "slo");
+          const location = data.location || "slo";
+          setSelectedLocation(location);
+          onLocationChange(location);
         } catch {
           setSelectedLocation("slo");
-          onLocationChange && onLocationChange("slo");
+          onLocationChange("slo");
         }
       } else {
         // Guest: use localStorage
         const guestLoc = localStorage.getItem("guestLocation") || "slo";
         setSelectedLocation(guestLoc);
-        onLocationChange && onLocationChange(guestLoc);
+        onLocationChange(guestLoc);
       }
     };
     fetchCurrentLocation();
-    // eslint-disable-next-line
-  }, [token]);
+  }, [token, onLocationChange]);
 
   const handleChange = async (e) => {
     const newLocation = e.target.value;
     setSelectedLocation(newLocation);
-    onLocationChange && onLocationChange(newLocation);
+    onLocationChange(newLocation);
 
     if (token) {
       try {
@@ -59,7 +59,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
           body: JSON.stringify({ location: newLocation }),
         });
       } catch (error) {
-        // Optionally handle error
+        console.error("Error updating location:", error);
       }
     } else {
       // Guest: save to localStorage
