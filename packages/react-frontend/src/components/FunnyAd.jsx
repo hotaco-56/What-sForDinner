@@ -15,7 +15,7 @@ const FunnyAd = () => {
     "🍪 Subway: Eat fresh while you're still deciding",
     "☕ Starbucks: Fuel your restaurant hunting with a Frappuccino",
     "🍔 Wendy's: Where's the beef? Right here while you're still looking",
-    "🌭 Five Guys: Burgers and fries while you analyze"
+    "🌭 Five Guys: Burgers and fries while you analyze",
   ];
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const FunnyAd = () => {
     const startAdInterval = () => {
       // Show new ad every 30 seconds
       adInterval = setInterval(() => {
-        setCurrentAdIndex(prev => (prev + 1) % companyAds.length);
+        setCurrentAdIndex((prev) => (prev + 1) % companyAds.length);
         setShowAd(true);
       }, 30000);
     };
@@ -42,14 +42,14 @@ const FunnyAd = () => {
   }, []);
 
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setShowAd(false);
 
     // Set timer to show next ad in 30 seconds
     setTimeout(() => {
-      setCurrentAdIndex(prev => (prev + 1) % companyAds.length);
+      setCurrentAdIndex((prev) => (prev + 1) % companyAds.length);
       setShowAd(true);
     }, 30000);
   };
@@ -70,12 +70,12 @@ const FunnyAd = () => {
           backgroundColor: "#333333",
           color: "white",
           "& .MuiAlert-icon": {
-            color: "white"
+            color: "white",
           },
           border: "1px solid white",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
           fontSize: "1rem",
-          cursor: "pointer"
+          cursor: "pointer",
         }}
       >
         {companyAds[currentAdIndex]}

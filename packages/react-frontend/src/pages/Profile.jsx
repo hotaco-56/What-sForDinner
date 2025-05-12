@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TextField, Button, Box, Snackbar, Alert } from "@mui/material";
 import FunnyAd from "../components/FunnyAd";
+import LocationPicker from "../components/LocationPicker";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -107,17 +108,25 @@ const Profile = () => {
             alt="Profile"
             style={{
               borderRadius: "50%",
-              width: "300px", 
-              height: "300px", 
+              width: "300px",
+              height: "300px",
               border: "3px solid white",
               marginBottom: "20px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
           />
           <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-            <p><strong>Bio:</strong> {user.bio || "No bio available"}</p>
-            <p><strong>Email:</strong> {user.email || "No email available"}</p>
-            <p><strong>Phone:</strong> {user.phone || "No phone number available"}</p>
+            <p>
+              <strong>Bio:</strong> {user.bio || "No bio available"}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email || "No email available"}
+            </p>
+            <p>
+              <strong>Phone:</strong>{" "}
+              {user.phone || "No phone number available"}
+            </p>
+            <LocationPicker token={localStorage.getItem("authToken")} />
             <Button
               variant="contained"
               onClick={() => setIsEditing(true)}
@@ -133,14 +142,18 @@ const Profile = () => {
             fullWidth
             label="Display Name"
             value={editedUser.displayName}
-            onChange={(e) => setEditedUser({ ...editedUser, displayName: e.target.value })}
+            onChange={(e) =>
+              setEditedUser({ ...editedUser, displayName: e.target.value })
+            }
             sx={{ mb: 2, bgcolor: "white" }}
           />
           <TextField
             fullWidth
             label="Bio"
             value={editedUser.bio}
-            onChange={(e) => setEditedUser({ ...editedUser, bio: e.target.value })}
+            onChange={(e) =>
+              setEditedUser({ ...editedUser, bio: e.target.value })
+            }
             multiline
             rows={4}
             sx={{ mb: 2, bgcolor: "white" }}
@@ -149,21 +162,27 @@ const Profile = () => {
             fullWidth
             label="Email"
             value={editedUser.email}
-            onChange={(e) => setEditedUser({ ...editedUser, email: e.target.value })}
+            onChange={(e) =>
+              setEditedUser({ ...editedUser, email: e.target.value })
+            }
             sx={{ mb: 2, bgcolor: "white" }}
           />
           <TextField
             fullWidth
             label="Phone"
             value={editedUser.phone}
-            onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+            onChange={(e) =>
+              setEditedUser({ ...editedUser, phone: e.target.value })
+            }
             sx={{ mb: 2, bgcolor: "white" }}
           />
           <TextField
             fullWidth
             label="Profile Picture URL"
             value={editedUser.profilePic}
-            onChange={(e) => setEditedUser({ ...editedUser, profilePic: e.target.value })}
+            onChange={(e) =>
+              setEditedUser({ ...editedUser, profilePic: e.target.value })
+            }
             sx={{ mb: 2, bgcolor: "white" }}
           />
           <Box sx={{ mt: 2 }}>
@@ -199,8 +218,8 @@ const Profile = () => {
             bgcolor: "#4caf50",
             color: "white",
             "& .MuiAlert-icon": {
-              color: "white"
-            }
+              color: "white",
+            },
           }}
         >
           Changes have been saved :)

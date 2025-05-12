@@ -8,56 +8,9 @@ import StarIcon from "@mui/icons-material/Star";
 import "../CSS/RestaurantList.css";
 
 //create RestaurantCard component
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant, userFavorites, onToggleFavorite }) => {
   const [hover, setHover] = useState(false);
-  const [favorited, setFavorited] = useState(false);
-
-  const checkFavoriteStatus = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!token) return;
-
-    try {
-      const response = await fetch("http://localhost:8000/users/details", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setFavorited(userData.favorites.includes(restaurant._id));
-      }
-    } catch (error) {
-      console.error("Error checking favorite status:", error);
-    }
-  };
-
-  useEffect(() => {
-    checkFavoriteStatus();
-  }, [restaurant._id, favorited]); // Add favorited to dependency array
-
-  const toggleFavorite = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!token) return;
-
-    try {
-      const response = await fetch("http://localhost:8000/users/favorites", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ restaurantId: restaurant._id }),
-      });
-
-      if (response.ok) {
-        setFavorited(!favorited);
-        await checkFavoriteStatus(); // Refresh favorite status after toggle
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    }
-  };
+  const isFavorited = userFavorites.some((fav) => fav.name === restaurant.name);
 
   return (
     <Card
@@ -65,8 +18,8 @@ const RestaurantCard = ({ restaurant }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {(hover || favorited) && // Show star if hovered or favorited
-        (favorited ? (
+      {(hover || isFavorited) && // Show star if hovered or favorited
+        (isFavorited ? (
           <StarIcon
             sx={{
               position: "absolute",
@@ -75,7 +28,7 @@ const RestaurantCard = ({ restaurant }) => {
               cursor: "pointer",
               color: "gold",
             }}
-            onClick={toggleFavorite}
+            onClick={() => onToggleFavorite(restaurant)}
           />
         ) : (
           <StarBorderIcon
@@ -87,7 +40,7 @@ const RestaurantCard = ({ restaurant }) => {
               color: "primary",
               "&:hover": { color: "gold" },
             }}
-            onClick={toggleFavorite}
+            onClick={() => onToggleFavorite(restaurant)}
           />
         ))}
       <CardHeader title={restaurant.name} />
@@ -122,12 +75,7 @@ const RestaurantCard = ({ restaurant }) => {
             ? restaurant.cuisines.join(", ")
             : "NA"}
         </p>
-        <p>
-          Price Range:{" "}
-          {restaurant.price_range_usd?.length > 0
-            ? restaurant.price_range_usd.join(" - ")
-            : "NA"}
-        </p>
+        <p>Price Range: {restaurant.price_range_usd || "NA"}</p>
         <p>Average Rating: {restaurant.rating || "NA"}</p>
         <p>Reviews: {restaurant.reviews || "NA"}</p>
         <p>Has Delivery: {restaurant.has_delivery ? "Yes" : "No"}</p>
@@ -168,11 +116,52 @@ const RestaurantCard = ({ restaurant }) => {
 
 //list all restaurant using RestaurantCard component
 
-const RestaurantList = (props) => {
+const RestaurantList = ({ restaurants }) => {
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/users/details", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const data = await res.json();
+        setFavorites(data.favorites || []);
+      } catch (error) {
+        console.log("Error fetching user details:", error);
+      }
+    };
+    fetchUserDetails();
+  }, []);
+
+  const toggleFavorite = async (restaurant) => {
+    try {
+      const res = await fetch("http://localhost:8000/users/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify({ restaurant }),
+      });
+      const data = await res.json();
+      setFavorites(data.favorites || []);
+    } catch (error) {
+      console.error("Error updating favorites:", error);
+    }
+  };
+
   return (
     <Box className="restaurant-list">
-      {(props.restaurants || []).map((restaurant) => (
-        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+      {restaurants.map((restaurant) => (
+        <RestaurantCard
+          key={restaurant._id}
+          restaurant={restaurant}
+          userFavorites={favorites}
+          onToggleFavorite={toggleFavorite}
+        />
       ))}
     </Box>
   );

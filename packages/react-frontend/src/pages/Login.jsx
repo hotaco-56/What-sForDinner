@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Link, Snackbar, Alert } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Link,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuthenticated }) => {
@@ -15,39 +23,39 @@ const Login = ({ setIsAuthenticated }) => {
     setErrorMessage("");
 
     try {
-      const endpoint = isSignUp ? 'signup' : 'login';
+      const endpoint = isSignUp ? "signup" : "login";
       // Update the URL to include 'users' instead of 'user'
       const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          username: username, 
-          passwd: password 
+        body: JSON.stringify({
+          username: username,
+          passwd: password,
         }),
       });
 
       // Add debugging
-      console.log('Response status:', response.status);
+      console.log("Response status:", response.status);
 
       const data = await response.text();
-      console.log('Response data:', data);
+      console.log("Response data:", data);
 
       if (response.ok) {
-        localStorage.setItem('authToken', data);
-        localStorage.removeItem('isGuest');
+        localStorage.setItem("authToken", data);
+        localStorage.removeItem("isGuest");
         setIsAuthenticated(true);
         setShowSuccess(true);
         setTimeout(() => {
-          navigate('/');
+          navigate("/");
         }, 1000);
       } else {
-        setErrorMessage(data || 'Authentication failed');
+        setErrorMessage(data || "Authentication failed");
       }
     } catch (error) {
-      console.error('Authentication error:', error);
-      setErrorMessage('Network error. Please try again.');
+      console.error("Authentication error:", error);
+      setErrorMessage("Network error. Please try again.");
     }
   };
 
@@ -77,7 +85,10 @@ const Login = ({ setIsAuthenticated }) => {
       <Typography variant="h4" sx={{ mb: 3 }}>
         {isSignUp ? "Create an Account" : "Sign In"}
       </Typography>
-      <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "400px" }}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ width: "100%", maxWidth: "400px" }}
+      >
         <TextField
           required
           fullWidth

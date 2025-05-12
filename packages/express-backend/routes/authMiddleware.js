@@ -5,7 +5,9 @@ const authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1]; // Extract the token from the "Bearer <token>" format
 
   if (!token) {
-    return res.status(401).json({ message: "Access token is missing or invalid." });
+    return res
+      .status(401)
+      .json({ message: "Access token is missing or invalid." });
   }
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {

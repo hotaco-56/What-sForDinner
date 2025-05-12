@@ -15,7 +15,7 @@ const Favorites = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:8000/users/details", {
+      const response = await fetch("http://localhost:8000/users/favorites", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -28,37 +28,17 @@ const Favorites = () => {
         return;
       }
 
-      setIsSignedIn(true);
       const data = await response.json();
 
-      if (!data.favorites || data.favorites.length === 0) {
+      setIsSignedIn(true);
+
+      if (!data || data.length === 0) {
         setFavorites([]);
         setLoading(false);
         return;
       }
 
-      // Fetch details for each favorited restaurant
-      const restaurantDetails = [];
-      for (const restaurantId of data.favorites) {
-        try {
-          const restaurantResponse = await fetch(
-            `http://localhost:8000/restaurants/${restaurantId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (restaurantResponse.ok) {
-            const restaurantData = await restaurantResponse.json();
-            restaurantDetails.push(restaurantData);
-          }
-        } catch (error) {
-          console.error(`Error fetching restaurant ${restaurantId}:`, error);
-        }
-      }
-
-      setFavorites(restaurantDetails);
+      setFavorites(data);
     } catch (err) {
       console.error("Error fetching favorites:", err);
     } finally {

@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Restaurants from "./pages/Restaurants";
@@ -60,11 +65,7 @@ function App() {
           <Route
             path="/"
             element={
-              isAuthenticated ? (
-                <Home />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              isAuthenticated ? <Home /> : <Navigate to="/login" replace />
             }
           />
           <Route
@@ -90,21 +91,13 @@ function App() {
           <Route
             path="/favorites"
             element={
-              isAuthenticated ? (
-                <Favorites />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              isAuthenticated ? <Favorites /> : <Navigate to="/login" replace />
             }
           />
           <Route
             path="/profile"
             element={
-              isAuthenticated ? (
-                <Profile />
-              ) : (
-                <Navigate to="/login" replace />
-              )
+              isAuthenticated ? <Profile /> : <Navigate to="/login" replace />
             }
           />
           <Route path="*" element={<Navigate to="/" replace />} />
