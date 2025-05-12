@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import RestaurantList from "../components/RestaurantList";
 import SearchFilter from "../components/SearchFilter";
 import FunnyAd from "../components/FunnyAd";
+import LocationPicker from "../components/LocationPicker";
 import "../CSS/restaurants.css";
 
 const Restaurants = () => {
@@ -17,25 +18,39 @@ const Restaurants = () => {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/location", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
-      const data = await res.json();
-      setCity(data.location.toLowerCase());
+      if (localStorage.getItem("authToken")) {
+        const res = await fetch("http://localhost:8000/users/location", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const data = await res.json();
+        setCity((data.location || "slo").toLowerCase());
+      } else {
+        // For guests, read from localStorage
+        const guestLocation = localStorage.getItem("guestLocation") || "slo";
+        setCity(guestLocation.toLowerCase());
+      }
     } catch (err) {
+      const defaultLocation = localStorage.getItem("guestLocation") || "slo";
+      setCity(defaultLocation.toLowerCase());
       console.error("Error fetching location:", err);
     }
   };
 
   const fetchFilters = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/filters", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
+      let res;
+      if (localStorage.getItem("authToken")) {
+        res = await fetch("http://localhost:8000/users/filters", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+      } else {
+        // Use guest endpoint if not authenticated
+        res = await fetch("http://localhost:8000/users/guest/filters");
+      }
       const data = await res.json();
       setFilters(data.filters);
       setFiltersLoaded(true);
@@ -45,17 +60,22 @@ const Restaurants = () => {
   };
 
   const saveFilters = async (newFilters) => {
-    try {
-      await fetch("http://localhost:8000/users/filters", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify({ filters: newFilters }),
-      });
-    } catch (err) {
-      console.error("Error saving filters:", err);
+    if (localStorage.getItem("authToken")) {
+      try {
+        await fetch("http://localhost:8000/users/filters", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify({ filters: newFilters }),
+        });
+      } catch (err) {
+        console.error("Error saving filters:", err);
+      }
+    } else {
+      // Save guest filters to localStorage
+      localStorage.setItem("guestFilters", JSON.stringify(newFilters));
     }
   };
 
@@ -104,6 +124,10 @@ const Restaurants = () => {
   return (
     <div className="restaurants-page">
       <h1>Restaurants</h1>
+      <LocationPicker
+        token={localStorage.getItem("authToken")}
+        onLocationChange={setCity}
+      />
       <SearchFilter filters={filters} setFilters={setFilters} city={city} />
       <RestaurantList restaurants={restaurants} />
       <FunnyAd />

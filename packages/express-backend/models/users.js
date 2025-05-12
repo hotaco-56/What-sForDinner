@@ -1,4 +1,3 @@
-//const { Schema, model } = require("mongoose");
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
@@ -13,7 +12,7 @@ const UserSchema = new mongoose.Schema({
   phone: String,
   profilePic: String,
   location: String,
-  favorites: [{ type: Object }],
+  favorites: [{ type: String }],
   history: [{ type: Object }],
   filters: {
     searchQuery: { type: String, default: "" },
