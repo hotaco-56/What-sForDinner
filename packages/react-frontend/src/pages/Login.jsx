@@ -10,6 +10,13 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+// Password must be at least 8 characters, include uppercase, lowercase, number, and special char
+const validatePassword = (password) => {
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+};
+
 const Login = ({ setIsAuthenticated }) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState("");
@@ -22,9 +29,15 @@ const Login = ({ setIsAuthenticated }) => {
     e.preventDefault();
     setErrorMessage("");
 
+    if (isSignUp && !validatePassword(password)) {
+      setErrorMessage(
+        "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character."
+      );
+      return;
+    }
+
     try {
       const endpoint = isSignUp ? "signup" : "login";
-      // Update the URL to include 'users' instead of 'user'
       const response = await fetch(`http://localhost:8000/users/${endpoint}`, {
         method: "POST",
         headers: {
@@ -36,7 +49,7 @@ const Login = ({ setIsAuthenticated }) => {
         }),
       });
 
-      // Add debugging
+      // Debugging
       console.log("Response status:", response.status);
 
       const data = await response.text();

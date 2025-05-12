@@ -8,6 +8,10 @@ import { Restaurant } from "../models/restaurant.js";
 const router = express.Router();
 router.use(express.json());
 
+function generateAccessToken(username) {
+  return jwt.sign({ username }, process.env.TOKEN_SECRET, { expiresIn: "600s" });
+}
+
 // Route to get user by ID
 router.get("/id/:id", async (req, res) => {
   try {
