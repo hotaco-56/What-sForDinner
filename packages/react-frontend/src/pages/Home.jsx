@@ -21,25 +21,38 @@ const Home = () => {
 
   const fetchLocation = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/location", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
+      let res;
+      if (localStorage.getItem("authToken")) {
+        res = await fetch("http://localhost:8000/users/location", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+      } else {
+        // Use guest endpoint if not authenticated
+        res = await fetch("http://localhost:8000/users/guest/location");
+      }
       const data = await res.json();
-      setCity(data.location.toLowerCase());
+      setCity((data.location || "slo").toLowerCase());
     } catch (err) {
+      setCity("slo");
       console.error("Error fetching user location:", err);
     }
   };
 
   const fetchFilters = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users/filters", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-      });
+      let res;
+      if (localStorage.getItem("authToken")) {
+        res = await fetch("http://localhost:8000/users/filters", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+      } else {
+        // Use guest endpoint if not authenticated
+        res = await fetch("http://localhost:8000/users/guest/filters");
+      }
       const data = await res.json();
       setFilters(data.filters);
       setFiltersLoaded(true);

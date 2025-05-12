@@ -107,6 +107,25 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// Add this above the authenticated routes
+
+// Public endpoint for guest location (from query or default)
+router.get("/guest/location", (req, res) => {
+  // Optionally, allow ?location=slo or default to slo
+  const location = req.query.location || "slo";
+  res.json({ location });
+});
+
+// Public endpoint for guest filters (returns empty/default filters)
+router.get("/guest/filters", (req, res) => {
+  res.json({ filters: {
+    searchQuery: "",
+    type: "",
+    price: "",
+    min_rating: "",
+  }});
+});
+
 // Route to update user details (bio, email, phone, profilePic)
 router.put("/update", authenticateToken, async (req, res) => {
   try {

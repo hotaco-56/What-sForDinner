@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 
-const LocationPicker = ({ token }) => {
-  const [selectedLocation, setSelectedLocation] = useState("");
+const LocationPicker = ({ token, onLocationChange }) => {
+  const [selectedLocation, setSelectedLocation] = useState(
+    localStorage.getItem("guestLocation") || "slo"
+  );
 
-  // Location mapping: User-friendly names to actual values
   const locationMap = {
     "San Luis Obispo": "slo",
     "San Francisco": "sf",
@@ -16,67 +17,73 @@ const LocationPicker = ({ token }) => {
     "New Orleans": "nola",
   };
 
-  // Reverse map for user-friendly names based on actual values
-  const reverseLocationMap = Object.fromEntries(
-    Object.entries(locationMap).map(([key, value]) => [value, key]),
-  );
-
-  // Fetch the current location when the component mounts
   useEffect(() => {
     const fetchCurrentLocation = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/users/location", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText);
+      if (token) {
+        try {
+          const response = await fetch("http://localhost:8000/users/location", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (!response.ok) throw new Error(await response.text());
+          const data = await response.json();
+          setSelectedLocation(data.location || "slo");
+          onLocationChange && onLocationChange(data.location || "slo");
+        } catch {
+          setSelectedLocation("slo");
+          onLocationChange && onLocationChange("slo");
         }
-
-        const data = await response.json();
-        setSelectedLocation(data.location || ""); // Set the last saved location as default
-      } catch (error) {
-        console.error("Error fetching current location:", error.message);
+      } else {
+        // Guest: use localStorage
+        const guestLoc = localStorage.getItem("guestLocation") || "slo";
+        setSelectedLocation(guestLoc);
+        onLocationChange && onLocationChange(guestLoc);
       }
     };
-
     fetchCurrentLocation();
+    // eslint-disable-next-line
   }, [token]);
 
   const handleChange = async (e) => {
     const newLocation = e.target.value;
     setSelectedLocation(newLocation);
+    onLocationChange && onLocationChange(newLocation);
 
-    try {
-      const response = await fetch("http://localhost:8000/users/location", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify({ location: newLocation }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
+    if (token) {
+      try {
+        await fetch("http://localhost:8000/users/location", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ location: newLocation }),
+        });
+      } catch (error) {
+        // Optionally handle error
       }
-
-      const data = await response.json();
-      console.log("Location updated:", data);
-    } catch (error) {
-      console.error("Error updating location:", error.message);
+    } else {
+      // Guest: save to localStorage
+      localStorage.setItem("guestLocation", newLocation);
     }
   };
 
   return (
-    <div>
-      <label htmlFor="location">Location: </label>
-      <select id="location" value={selectedLocation} onChange={handleChange}>
+    <div style={{ margin: "20px 0" }}>
+      <label htmlFor="location" style={{ marginRight: "10px", color: "white" }}>
+        Select Location:{" "}
+      </label>
+      <select
+        id="location"
+        value={selectedLocation}
+        onChange={handleChange}
+        style={{
+          padding: "8px",
+          borderRadius: "4px",
+          backgroundColor: "#333",
+          color: "white",
+          border: "1px solid white",
+        }}
+      >
         {Object.entries(locationMap).map(([label, value]) => (
           <option key={value} value={value}>
             {label}
