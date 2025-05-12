@@ -16,13 +16,6 @@
     width: 150px;
     background-color: #333333;
   }
-
-.search-field:hover,
-  .rating-dropdown:hover,
-  .type-dropdown:hover,
-  .price-dropdown:hover {
-    background-color: #454545;
-  }
   
 .search-field {
     width: 200px;
@@ -99,12 +92,3 @@
   color: white;
 }
 
-button {
-  background-color: var(--secondary-background) !important;
-  color: white !important;
-}
-
-button:hover {
-  background-color: var(--hover) !important;
-  color: black !important;
-}
