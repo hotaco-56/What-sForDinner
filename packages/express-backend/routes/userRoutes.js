@@ -39,14 +39,15 @@ router.get("/", async (req, res) => {
 
 // Route to log in a user
 router.post("/login", async (req, res) => {
-  const username = req.body.username;
-  const passwd = req.body.passwd;
+  try {
+    const username = req.body.username;
+    const passwd = req.body.passwd;
 
-  if (!username || !passwd) {
-    return res.status(400).send("Username and password are required");
-  }
+    if (!username || !passwd) {
+      return res.status(400).send("Username and password are required");
+    }
 
-  const user = await Users.findOne({ name: username });
+    const user = await Users.findOne({ name: username });
 
     if (!user) {
       return res.status(404).send("User not found");
