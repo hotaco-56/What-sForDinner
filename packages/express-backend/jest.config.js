@@ -4,7 +4,7 @@ export default {
   collectCoverageFrom: ["models/**/*.js"],
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],
-  transform: { "·^.+\\.js$": "babel-jest"},
+  transform: { "^.+\\.js$": "babel-jest"},
   moduleFileExtensions: ["js", "json", "node"],
   testMatch: ["**/tests/**/*.test.js"],
 };

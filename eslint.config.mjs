@@ -31,7 +31,7 @@ export default [
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
       "no-undef": "off",
-      "prettier/prettier": ["error", {"singleQuote": false}],
+      "prettier/prettier": 0,
     },
     languageOptions: {
       globals: {
