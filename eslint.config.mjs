@@ -30,11 +30,13 @@ export default [
       "react/prop-types": 0,
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
+      "no-undef": "off",
     },
     languageOptions: {
       globals: {
         adm: true,
         process: true,
+        console: true,
         require: true
       }
     },
