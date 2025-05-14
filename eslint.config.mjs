@@ -31,10 +31,12 @@ export default [
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
     },
-    globals: {
-      adm: true,
-      process: true,
-      require: true
+    languageOptions: {
+      globals: {
+        adm: true,
+        process: true,
+        require: true
+      }
     },
     settings: {
       react: {
