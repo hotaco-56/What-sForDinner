@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
   phone: String,
   profilePic: String,
   location: String,
-  favorites: [{ type: String }],
+  favorites: [{ type: Object }],
   history: [{ type: Object }],
   filters: {
     searchQuery: { type: String, default: "" },
