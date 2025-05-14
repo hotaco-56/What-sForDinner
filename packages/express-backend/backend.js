@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import connectDB from "./database.js";
-import { Restaurant, getRestaurantModel } from "./models/restaurant.js";
+import Restaurant from "./models/restaurant.js";
 
 dotenv.config();
 
@@ -21,64 +21,64 @@ connectDB();
 const options = {
   method: "GET",
   headers: {
-    "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+    "x-rapidapi-key": import.meta.env.RAPIDAPI_KEY,
     "x-rapidapi-host": "tripadvisor-scraper.p.rapidapi.com",
   },
 };
 
-async function fetchRestaurants(page, location) {
-  const encodedLocation = encodeURIComponent(location);
-  const url = `https://tripadvisor-scraper.p.rapidapi.com/restaurants/list?query=${encodedLocation}&page=${page}`;
+// async function fetchRestaurants(page, location) {
+//   const encodedLocation = encodeURIComponent(location);
+//   const url = `https://tripadvisor-scraper.p.rapidapi.com/restaurants/list?query=${encodedLocation}&page=${page}`;
 
-  try {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+//   try {
+//     const response = await fetch(url, options);
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
 
-    const data = await response.json();
-    const restaurants = data.results || [];
+//     const data = await response.json();
+//     const restaurants = data.results || [];
 
-    for (const restaurant of restaurants) {
-      const restaurantDetails = {
-        id: restaurant.id,
-        name: restaurant.name,
-        link: restaurant.link,
-        reviews: restaurant.reviews,
-        rating: restaurant.rating,
-        price_range_usd: restaurant.price_range_usd,
-        menu_link: restaurant.menu_link,
-        reservation_link: restaurant.reservation_link,
-        featured_image: restaurant.featured_image,
-        has_delivery: restaurant.has_delivery,
-        cuisines: restaurant.cuisines,
-      };
+//     for (const restaurant of restaurants) {
+//       const restaurantDetails = {
+//         id: restaurant.id,
+//         name: restaurant.name,
+//         link: restaurant.link,
+//         reviews: restaurant.reviews,
+//         rating: restaurant.rating,
+//         price_range_usd: restaurant.price_range_usd,
+//         menu_link: restaurant.menu_link,
+//         reservation_link: restaurant.reservation_link,
+//         featured_image: restaurant.featured_image,
+//         has_delivery: restaurant.has_delivery,
+//         cuisines: restaurant.cuisines,
+//       };
 
-      try {
-        const newRestaurant = new Restaurant(restaurantDetails);
-        await newRestaurant.save();
-      } catch (dbError) {
-        console.error(
-          `Error saving restaurant ${restaurant.name}:`,
-          dbError.message,
-        );
-      }
-    }
-    console.log("Saves completed");
-  } catch (error) {
-    console.error(
-      `Error fetching or storing restaurants from page ${page} in ${location}:`,
-      error.message,
-    );
-  }
-}
+//       try {
+//         const newRestaurant = new Restaurant(restaurantDetails);
+//         await newRestaurant.save();
+//       } catch (dbError) {
+//         console.error(
+//           `Error saving restaurant ${restaurant.name}:`,
+//           dbError.message,
+//         );
+//       }
+//     }
+//     console.log("Saves completed");
+//   } catch (error) {
+//     console.error(
+//       `Error fetching or storing restaurants from page ${page} in ${location}:`,
+//       error.message,
+//     );
+//   }
+// }
 
-async function fetchAllRestaurants(location) {
-  for (let i = 1; i <= 25; i++) {
-    await fetchRestaurants(i, location);
-  }
-  console.log("all saves complete");
-}
+// async function fetchAllRestaurants(location) {
+//   for (let i = 1; i <= 25; i++) {
+//     await fetchRestaurants(i, location);
+//   }
+//   console.log("all saves complete");
+// }
 
 //slo pages 1-5, 148 restaurants
 //sf pages 1-25, 737 restaurants

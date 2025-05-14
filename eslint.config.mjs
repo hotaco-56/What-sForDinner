@@ -29,6 +29,12 @@ export default [
     rules: {
       "react/prop-types": 0,
       "react/react-in-jsx-scope": "off",
+      "no-unused-vars": "off",
+    },
+    env: {
+      browser: true,
+      node: true,
+      es6: true
     },
     settings: {
       react: {
