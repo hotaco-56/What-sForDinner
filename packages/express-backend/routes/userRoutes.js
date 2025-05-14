@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
 });
 
 function generateAccessToken(username) {
-  return jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
+  return jwt.sign({ username: username }, import.meta.env.TOKEN_SECRET, {
     expiresIn: "600s",
   });
 }
