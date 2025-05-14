@@ -36,6 +36,11 @@ export default [
       node: true,
       es6: true
     },
+    globals: {
+      adm: true,
+      process: true,
+      require: true
+    },
     settings: {
       react: {
         version: "detect",
