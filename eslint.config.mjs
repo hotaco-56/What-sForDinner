@@ -31,11 +31,6 @@ export default [
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
     },
-    env: {
-      browser: true,
-      node: true,
-      es6: true
-    },
     globals: {
       adm: true,
       process: true,
