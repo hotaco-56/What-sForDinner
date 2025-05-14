@@ -30,7 +30,6 @@ export default [
       "react/prop-types": 0,
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "error"
     },
     settings: {
       react: {
