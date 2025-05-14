@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import restaurantRoutes from "./routes/restaurantRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import connectDB from "./database.js";
-import { Restaurant, getRestaurantModel } from "./models/restaurant.js";
+import Restaurant from "./models/restaurant.js";
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ connectDB();
 const options = {
   method: "GET",
   headers: {
-    "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+    "x-rapidapi-key": import.meta.env.RAPIDAPI_KEY,
     "x-rapidapi-host": "tripadvisor-scraper.p.rapidapi.com",
   },
 };
@@ -73,12 +73,12 @@ async function fetchRestaurants(page, location) {
   }
 }
 
-async function fetchAllRestaurants(location) {
-  for (let i = 1; i <= 25; i++) {
-    await fetchRestaurants(i, location);
-  }
-  console.log("all saves complete");
-}
+// async function fetchAllRestaurants(location) {
+//   for (let i = 1; i <= 25; i++) {
+//     await fetchRestaurants(i, location);
+//   }
+//   console.log("all saves complete");
+// }
 
 //slo pages 1-5, 148 restaurants
 //sf pages 1-25, 737 restaurants
