@@ -137,7 +137,7 @@ const Home = () => {
       <h1 className="page-title">What's For Dinner?</h1>
       <div className="home-container">
         <div className="filters-container">
-          <div className="filters-display">
+        <div className="filters-display">
             <p><strong>City:</strong> {city || "Loading city..."}</p>
             <p><strong>Search Query:</strong> {filters.searchQuery || "None"}</p>
             <p><strong>Type:</strong> {filters.type || "Any"}</p>
@@ -164,22 +164,13 @@ const Home = () => {
                 }))}
               />
             </div>
-            <div className="reopen-container">
-              {selectedItem ? (
-                <button className="reopen-button" onClick={handleReopenModal}>
-                  Reopen Pick
-                </button>
-              ) : (
-                <span style={{ visibility: "hidden" }}>placeholder</span>
-              )}
-            </div>
           </>
         ) : (
           <p>Loading restaurants or no restaurants found...</p>
         )}
       </div>
   
-      {selectedItem && <p className="result-text">Selected Restaurant: {selectedItem.name}</p>}
+      {selectedItem && <p className="result-text" onClick={handleReopenModal}>Selected Restaurant: {selectedItem.name}</p>}
   
       <RestaurantModal
         open={open}

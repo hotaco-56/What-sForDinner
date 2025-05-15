@@ -9,6 +9,7 @@ import {
     Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import "../CSS/Login.css"; // <-- Import the new CSS file
 
 // Password must be at least 8 characters, include uppercase, lowercase, number, and special char
 const validatePassword = (password) => {
@@ -83,28 +84,14 @@ const Login = ({ setIsAuthenticated }) => {
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100vh",
-                bgcolor: "black",
-                color: "white",
-                padding: 2,
-            }}
-        >
-            <Typography variant="h3" sx={{ mb: 3, fontWeight: "bold" }}>
+        <Box className="login-root">
+            <Typography variant="h3" className="login-title">
                 What's For Dinner
             </Typography>
-            <Typography variant="h4" sx={{ mb: 3 }}>
+            <Typography variant="h4" className="login-subtitle">
                 {isSignUp ? "Create an Account" : "Sign In"}
             </Typography>
-            <form
-                onSubmit={handleSubmit}
-                style={{ width: "100%", maxWidth: "400px" }}
-            >
+            <form onSubmit={handleSubmit} className="login-form">
                 <TextField
                     required
                     fullWidth
@@ -112,7 +99,7 @@ const Login = ({ setIsAuthenticated }) => {
                     variant="outlined"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    sx={{ mb: 2, bgcolor: "white" }}
+                    className="login-textfield"
                 />
                 <TextField
                     required
@@ -122,16 +109,16 @@ const Login = ({ setIsAuthenticated }) => {
                     variant="outlined"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    sx={{ mb: 2, bgcolor: "white" }}
+                    className="login-textfield"
                 />
                 {errorMessage && (
-                    <Typography sx={{ color: "red", mb: 2 }}>{errorMessage}</Typography>
+                    <Typography className="login-error">{errorMessage}</Typography>
                 )}
                 <Button
                     fullWidth
                     type="submit"
                     variant="contained"
-                    sx={{ bgcolor: "#1976d2", "&:hover": { bgcolor: "#115293" }, mb: 2 }}
+                    className="login-submit"
                 >
                     {isSignUp ? "Sign Up" : "Sign In"}
                 </Button>
@@ -144,7 +131,7 @@ const Login = ({ setIsAuthenticated }) => {
                         setIsSignUp(!isSignUp);
                         setErrorMessage("");
                     }}
-                    sx={{ color: "#1976d2", cursor: "pointer" }}
+                    className="login-link"
                 >
                     {isSignUp ? "Sign In" : "Create an Account"}
                 </Link>
@@ -153,12 +140,7 @@ const Login = ({ setIsAuthenticated }) => {
                 fullWidth
                 variant="outlined"
                 onClick={handleGuestAccess}
-                sx={{
-                    mt: 3,
-                    color: "white",
-                    borderColor: "white",
-                    "&:hover": { bgcolor: "#333", borderColor: "white" },
-                }}
+                className="login-guest"
             >
                 Continue as Guest
             </Button>

@@ -69,7 +69,7 @@ const LocationPicker = ({ token, onLocationChange }) => {
 
   return (
     <div style={{ margin: "20px 0" }}>
-      <label htmlFor="location" style={{ marginRight: "10px", color: "white" }}>
+      <label htmlFor="location" style={{ marginRight: "10px", color: "black"}}>
         Select Location:{" "}
       </label>
       <select
