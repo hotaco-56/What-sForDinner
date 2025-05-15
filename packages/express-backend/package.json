@@ -2,7 +2,7 @@
   "name": "express-backend",
   "version": "1.0.0",
   "main": "backend.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "test": "jest",
     "dev": "npx nodemon backend.js",

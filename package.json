@@ -2,7 +2,6 @@
   "name": "what-sfordinner",
   "version": "1.0.0",
   "description": "what is for dinner",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "jest --coverage",
@@ -20,8 +19,10 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.20.0",
+    "babel-jest": "^29.7.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",

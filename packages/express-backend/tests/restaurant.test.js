@@ -1,7 +1,6 @@
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import { Restaurant, getRestaurantModel } from "../models/restaurant.js";
-
+const mongoose = require("mongoose");
+const { MongoMemoryServer } = require("mongodb-memory-server");
+const { Restaurant, getRestaurantModel } = require("../models/restaurant");
 
 let mongoServer;
 
@@ -24,7 +23,7 @@ describe("Restaurant Model Tests", () => {
       link: "https://www.mcdonalds.com",
       reviews: 500,
       rating: 4.1,
-      price_range_usd: ["$"],
+      price_range_usd: "$",
       menu_link: "https://www.mcdonalds.com/menu",
       reservation_link: "https://www.mcdonalds.com/reservation",
       featured_image: "https://via.placeholder.com/150",
