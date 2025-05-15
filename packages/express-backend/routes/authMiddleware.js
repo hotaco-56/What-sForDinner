@@ -10,7 +10,7 @@ const authenticateToken = (req, res, next) => {
       .json({ message: "Access token is missing or invalid." });
   }
 
-  jwt.verify(token, import.meta.env.TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
     if (err) {
       return res.status(403).json({ message: "Invalid or expired token." });
     }
