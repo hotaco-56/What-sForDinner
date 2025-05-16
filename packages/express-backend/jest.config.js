@@ -5,5 +5,6 @@ module.exports = {
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov"],
   moduleFileExtensions: ["js", "json", "node"],
-  testMatch: ["**/tests/**/*.test.js"]
+  testMatch: ["**/tests/**/*.test.js"],
+  transform: {},
 };
