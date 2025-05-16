@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "what is for dinner",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "jest --coverage",
     "lint": "npx eslint .",
